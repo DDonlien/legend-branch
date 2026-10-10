@@ -24,6 +24,9 @@ P1 只验证一件事：以“孙悟空”为唯一样例时，“横向时间 �
 - 在可横向、纵向滚动的主图中查看传播和演化关系。
 - 点击节点后在当前页面打开克制的浮层，查看简介、关系和外链。
 - 清除 Trace 后查看 P1 中围绕孙悟空整理的全部节点。
+- 当前界面采用 Material 3 Expressive，保留顶栏、文化分区、画布和详情浮层结构。
+- 分支参考 GitTogether 的轨道与换道方式，以大卡片显示节点，连线避让卡片。
+- 为现代作品展开非等距时间轴；历史年份不变，时间刻度与文化索引随画布滚动同步。
 
 ## 技术栈
 
@@ -31,6 +34,11 @@ P1 只验证一件事：以“孙悟空”为唯一样例时，“横向时间 �
 - React
 - Vite
 - 原生 SVG 图谱画布
+- Google Material Web 2.5.0 标准组件与 Expressive labs，使用 @lit/react 接入
+- Google Material Color Utilities / HCT 色彩角色
+- 自托管 Roboto Flex 与 Material Symbols Rounded
+
+Expressive 按钮、图标按钮和卡片直接使用官方组件。Material Web 尚无独立 Search bar 元素，搜索入口以官方 Filled Text Field 按 M3 Search bar 规范组合。实验组件版本固定，构建适配使用包内官方等价样式。
 
 ## 快速开始
 
@@ -43,6 +51,7 @@ npm run dev
 
 ```bash
 npm run lint
+npm run test
 npm run build
 ```
 
@@ -55,7 +64,10 @@ npm run build
 ├── REQUIREMENTS.md  # 需求、验收条件与任务状态
 ├── DESIGN.md        # 视觉语言和界面规范
 ├── agent-log/       # 前期讨论记录与后续执行日志
+├── archive/design/  # 历史视觉规范
 ├── output/concepts/ # P1 视觉概念参考
+├── output/validation/ # 实际浏览器界面截图与验收记录
+├── tests/           # 图谱日期、几何、关系与颜色对比度回归
 └── src/             # React 应用、结构化数据与 SVG 图谱组件
 ```
 
@@ -69,3 +81,5 @@ npm run build
 ## 产品边界
 
 LegendBranch 的长期方向可以覆盖神话、民俗、文学、都市传说和现代媒体中的文化演化关系，但不会把未经核验的 AI 推断当作事实发布。P1 不验证大规模数据、AI 自动补全、社区或后台能力，只验证最小图谱体验。
+
+搜索和筛选目前保留禁用入口。生产构建输出到 `dist/`，可以使用 `npm run preview` 本地查看；仓库尚未定义生产托管或发布命令。

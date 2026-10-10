@@ -1,0 +1,88 @@
+{
+  "verifiedAt": "2026-10-10T16:09:56.293Z",
+  "environment": "本地 Vite 生产构建预览，未部署到生产托管",
+  "url": "http://127.0.0.1:4176/",
+  "checks": [
+    {
+      "name": "默认 Trace 与数据数量",
+      "passed": true,
+      "edges": 11,
+      "muted": 4,
+      "nodes": 12,
+      "traced": 7
+    },
+    {
+      "name": "清除 Trace 显示全部节点",
+      "passed": true,
+      "muted": 0,
+      "status": "当前显示：12 个节点",
+      "traced": 0
+    },
+    {
+      "name": "关系键盘跳转与来源链接保留",
+      "passed": true,
+      "href": "https://en.wikipedia.org/wiki/Goku",
+      "rel": "noreferrer",
+      "selected": "dragon-ball",
+      "target": "_blank",
+      "title": "《龙珠》孙悟空"
+    },
+    {
+      "name": "Escape 关闭非模态详情",
+      "passed": true
+    },
+    {
+      "name": "Space 打开图谱卡片",
+      "passed": true
+    },
+    {
+      "name": "隐藏工具栏释放高度并保持选择",
+      "passed": true,
+      "height": 960,
+      "selected": "sun-wukong",
+      "toolbar": false
+    },
+    {
+      "name": "工具栏恢复",
+      "passed": true
+    },
+    {
+      "name": "减少动态效果",
+      "passed": true,
+      "reduced": true,
+      "buttonTransition": "0s",
+      "cardTransition": "0s"
+    },
+    {
+      "name": "远处的大卡片可以选择",
+      "passed": true
+    },
+    {
+      "name": "横纵滚动索引同步",
+      "passed": true,
+      "axis": "transform: translateX(-1357px);",
+      "pageOverflow": false,
+      "rail": "transform: translateY(-376px);",
+      "x": 1357,
+      "y": 376
+    },
+    {
+      "name": "980px 桌面窗口无页面溢出",
+      "passed": true,
+      "footerHeight": 87,
+      "overflow": false,
+      "toolbarWidth": 980,
+      "width": 980
+    },
+    {
+      "name": "P1 搜索与筛选继续禁用",
+      "passed": true
+    },
+    {
+      "name": "生产构建控制台",
+      "passed": true,
+      "errors": 0,
+      "warnings": 0
+    }
+  ]
+}

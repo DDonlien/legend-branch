@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
-import { edges, nodes, regions } from "../data";
-import { CANVAS_HEIGHT, CANVAS_WIDTH, LABEL_WIDTH, nodeById, nodeToPoint, timelineTicks, yearToX } from "../layout";
+import { useEffect, useRef, useState } from "react";
+import { edges, nodes } from "../data";
+import { CANVAS_HEIGHT, CANVAS_WIDTH, CARD_HEIGHT, CARD_WIDTH, edgeToRoute, LABEL_WIDTH, nodeById, nodeToPoint, regionLayouts, timelineTicks } from "../layout";
 import type { LegendNode } from "../types";
+import { MaterialCard } from "./Material";
 
 type LegendCanvasProps = {
   traceActive: boolean;
@@ -9,146 +10,115 @@ type LegendCanvasProps = {
   onSelectNode: (id: string) => void;
 };
 
-function edgePath(from: LegendNode, to: LegendNode) {
-  const start = nodeToPoint(from);
-  const end = nodeToPoint(to);
-  const middleX = start.x + Math.max(30, (end.x - start.x) * 0.52);
-  return `M ${start.x} ${start.y} C ${middleX} ${start.y}, ${middleX} ${end.y}, ${end.x} ${end.y}`;
-}
+const graphEdges = edges.map((edge) => ({ edge, ...edgeToRoute(edge) }));
+const kindLabel = { origin: "神话 / 民俗", literature: "古典文学", modern: "现代作品" };
 
 function NodeShape({ node }: { node: LegendNode }) {
-  if (node.kind === "literature") {
-    return <rect className="node-shape" x="-9" y="-9" width="18" height="18" rx="1" transform="rotate(45)" />;
-  }
-  if (node.kind === "modern") {
-    return <rect className="node-shape" x="-8" y="-8" width="16" height="16" rx="1" />;
-  }
-  return <circle className="node-shape" r="8" />;
+  if (node.kind === "literature") return <rect className="node-shape" x="-6" y="-6" width="12" height="12" rx="1" transform="rotate(45)" />;
+  if (node.kind === "modern") return <rect className="node-shape" x="-6" y="-6" width="12" height="12" rx="2" />;
+  return <circle className="node-shape" r="6" />;
 }
 
 export function LegendCanvas({ traceActive, selectedId, onSelectNode }: LegendCanvasProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [scroll, setScroll] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    const focusNode = nodeById.get("sun-wukong");
-    if (!scrollContainer || !focusNode) return;
-    const focusPoint = nodeToPoint(focusNode);
-    scrollContainer.scrollLeft = Math.max(0, focusPoint.x - scrollContainer.clientWidth * 0.62);
-    scrollContainer.scrollTop = 0;
+    const container = scrollRef.current;
+    const focus = nodeById.get("sun-wukong");
+    if (!container || !focus) return;
+    const point = nodeToPoint(focus);
+    container.scrollLeft = Math.max(0, point.x - container.clientWidth * 0.5);
+    container.scrollTop = Math.max(0, point.y - container.clientHeight * 0.38);
+    setScroll({ x: container.scrollLeft, y: container.scrollTop });
   }, []);
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    const selected = selectedId ? nodeById.get(selectedId) : null;
+    if (!container || !selected) return;
+    const point = nodeToPoint(selected);
+    const leftInset = LABEL_WIDTH + 24;
+    const rightInset = Math.min(384, container.clientWidth * 0.4);
+    if (point.x < container.scrollLeft + leftInset) container.scrollLeft = Math.max(0, point.x - leftInset);
+    else if (point.x + CARD_WIDTH > container.scrollLeft + container.clientWidth - rightInset) {
+      container.scrollLeft = point.x + CARD_WIDTH - container.clientWidth + rightInset;
+    }
+    if (point.y - CARD_HEIGHT / 2 < container.scrollTop + 80) container.scrollTop = Math.max(0, point.y - CARD_HEIGHT / 2 - 80);
+    else if (point.y + CARD_HEIGHT / 2 > container.scrollTop + container.clientHeight - 24) {
+      container.scrollTop = point.y + CARD_HEIGHT / 2 - container.clientHeight + 24;
+    }
+    setScroll({ x: container.scrollLeft, y: container.scrollTop });
+  }, [selectedId]);
 
   return (
     <>
       <div className="culture-rail" aria-hidden="true">
-        {regions.map((region) => (
-          <div
-            className={`culture-rail-item region-${region.id}`}
-            key={region.id}
-            style={{ top: region.y, height: region.height }}
-          >
-            <strong>{region.label}</strong>
-            <small>{region.subtitle}</small>
-          </div>
-        ))}
-      </div>
-      <div className="canvas-scroll" ref={scrollRef}>
-        <svg
-          className="legend-canvas"
-          viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`}
-          width={CANVAS_WIDTH}
-          height={CANVAS_HEIGHT}
-          role="img"
-          aria-label="孙悟空传说演化时间图谱"
-        >
-        <defs>
-          <filter id="trace-glow" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          <marker id="arrow-trace" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M 0 0 L 8 4 L 0 8 z" fill="#dfff3f" />
-          </marker>
-        </defs>
-
-        <g className="grid-layer">
-          {timelineTicks.map((tick) => (
-            <g key={tick.year}>
-              <line x1={yearToX(tick.year)} y1="44" x2={yearToX(tick.year)} y2={CANVAS_HEIGHT} />
-              <text x={yearToX(tick.year)} y="28">
-                {tick.label}
-              </text>
-            </g>
+        <div className="culture-rail-heading md-typescale-label-medium">文化 / 地区<span>时间 →</span></div>
+        <div className="culture-rail-tracks" style={{ transform: `translateY(${-scroll.y}px)` }}>
+          {regionLayouts.map((region) => (
+            <div className={`culture-rail-item region-${region.id}`} key={region.id} style={{ top: region.y, height: region.height }}>
+              <span className="culture-marker" />
+              <strong className="md-typescale-title-medium">{region.label}</strong>
+              <small className="md-typescale-label-small">{region.subtitle}</small>
+            </div>
           ))}
-        </g>
-
-        <g className="region-layer">
-          {regions.map((region) => (
-            <g className={`region region-${region.id}`} key={region.id}>
+        </div>
+      </div>
+      <div className="timeline-header" aria-hidden="true">
+        <svg width={CANVAS_WIDTH} height="64" style={{ transform: `translateX(${-scroll.x}px)` }}>
+          {timelineTicks.map((tick) => <g key={tick.year}>
+            <text x={tick.x} y="28">{tick.label}</text>
+            <line x1={tick.x} x2={tick.x} y1="44" y2="64" />
+          </g>)}
+        </svg>
+      </div>
+      <div className="canvas-scroll" ref={scrollRef} onScroll={(event) => setScroll({ x: event.currentTarget.scrollLeft, y: event.currentTarget.scrollTop })}>
+        <svg className="legend-canvas" viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} role="group" aria-label="孙悟空传说演化时间图谱，横向为非等距时间，纵向为文化与角色行">
+          <g className="region-layer" aria-hidden="true">
+            {regionLayouts.map((region) => <g className={`region region-${region.id}`} key={region.id}>
               <rect x="0" y={region.y} width={CANVAS_WIDTH} height={region.height} />
               <line x1="0" y1={region.y + region.height} x2={CANVAS_WIDTH} y2={region.y + region.height} />
-              <text className="region-label" x="24" y={region.y + region.height / 2 - 6}>
-                {region.label}
-              </text>
-              <text className="region-subtitle" x="24" y={region.y + region.height / 2 + 18}>
-                {region.subtitle}
-              </text>
-            </g>
-          ))}
-          <line className="label-divider" x1={LABEL_WIDTH} y1="0" x2={LABEL_WIDTH} y2={CANVAS_HEIGHT} />
-        </g>
-
-        <g className="edge-layer">
-          {edges.map((edge) => {
-            const from = nodeById.get(edge.from);
-            const to = nodeById.get(edge.to);
-            if (!from || !to) return null;
-            const muted = traceActive && !edge.isTrace;
-            return (
-              <path
-                className={`edge edge-${edge.confidence} ${edge.isTrace && traceActive ? "is-traced" : ""} ${muted ? "is-muted" : ""}`}
-                d={edgePath(from, to)}
-                key={edge.id}
-                markerEnd={edge.isTrace && traceActive ? "url(#arrow-trace)" : undefined}
-              />
-            );
-          })}
-        </g>
-
-        <g className="node-layer">
-          {nodes.map((node) => {
-            const point = nodeToPoint(node);
-            const muted = traceActive && !node.isTrace;
-            return (
-              <g
-                className={`node node-${node.kind} ${node.isTrace && traceActive ? "is-traced" : ""} ${
-                  muted ? "is-muted" : ""
-                } ${selectedId === node.id ? "is-selected" : ""}`}
-                key={node.id}
-                transform={`translate(${point.x}, ${point.y})`}
+            </g>)}
+            <line className="label-divider" x1={LABEL_WIDTH} y1="0" x2={LABEL_WIDTH} y2={CANVAS_HEIGHT} />
+          </g>
+          <g className="grid-layer" aria-hidden="true">
+            {timelineTicks.map((tick) => <line key={tick.year} x1={tick.x} x2={tick.x} y1="64" y2={CANVAS_HEIGHT} />)}
+          </g>
+          <g className="edge-layer" aria-hidden="true">
+            {graphEdges.map(({ edge, path, track }) => <path
+              key={edge.id} data-edge-id={edge.id}
+              className={`edge track-${track} edge-${edge.confidence} ${edge.isTrace && traceActive ? "is-traced" : ""} ${traceActive && !edge.isTrace ? "is-muted" : ""}`}
+              d={path}
+            ><title>{`${nodeById.get(edge.from)?.name} → ${nodeById.get(edge.to)?.name} · ${edge.relation} · ${edge.confidence}${edge.debated ? " · 存在争议" : ""}`}</title></path>)}
+          </g>
+          <g className="node-layer">
+            {nodes.map((node) => {
+              const point = nodeToPoint(node);
+              const incoming = edges.some((edge) => edge.to === node.id);
+              const outgoing = edges.some((edge) => edge.from === node.id);
+              return <g
+                className={`node track-${node.region} node-${node.kind} ${node.isTrace && traceActive ? "is-traced" : ""} ${traceActive && !node.isTrace ? "is-muted" : ""} ${selectedId === node.id ? "is-selected" : ""}`}
+                key={node.id} data-node-id={node.id} transform={`translate(${point.x}, ${point.y})`}
               >
-                <NodeShape node={node} />
-                <text className="node-title" x="18" y="-3">
-                  {node.name}
-                </text>
-                <text className="node-year" x="18" y="16">
-                  {node.yearLabel}
-                </text>
-                <foreignObject x="-14" y="-20" width="220" height="44">
-                  <button
-                    className="node-hitbox"
-                    type="button"
-                    aria-label={`查看节点：${node.name}`}
-                    onClick={() => onSelectNode(node.id)}
-                  />
+                <g transform="translate(-12, 0)" aria-hidden="true">
+                  {selectedId === node.id ? <circle className="node-selection-ring" r="12" /> : null}
+                  <NodeShape node={node} />
+                </g>
+                <path className="node-port-line" d={`M -6 0 H 0${outgoing ? ` M ${CARD_WIDTH} 0 H ${CARD_WIDTH + 12}` : ""}`} aria-hidden="true" />
+                {outgoing ? <circle className="node-port" cx={CARD_WIDTH + 12} cy="0" r="3" aria-hidden="true" /> : null}
+                <foreignObject x="0" y={-CARD_HEIGHT / 2} width={CARD_WIDTH} height={CARD_HEIGHT}>
+                  <MaterialCard color="filled" interactive className="graph-card" aria-label={`查看节点：${node.name}`} title={`${node.name} · ${node.yearLabel}`} onClick={() => onSelectNode(node.id)}>
+                    <div className="graph-card-content">
+                      <span className="card-kind md-typescale-label-small">{kindLabel[node.kind]}{node.id === "sun-wukong" && traceActive ? <span className="card-trace-label">Trace 中心</span> : null}</span>
+                      <strong className="card-title md-typescale-title-small">{node.name}</strong>
+                      <span className="card-year md-typescale-body-small">{node.yearLabel}<span>{incoming ? "←" : "起源"}{outgoing ? " →" : ""}</span></span>
+                    </div>
+                  </MaterialCard>
                 </foreignObject>
-              </g>
-            );
-          })}
-        </g>
+              </g>;
+            })}
+          </g>
         </svg>
       </div>
     </>
