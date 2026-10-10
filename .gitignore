@@ -3,3 +3,7 @@ node_modules/
 dist/
 *.tsbuildinfo
 /agent-template
+.wrangler/
+.env*
+!.env.example
+.dev.vars*

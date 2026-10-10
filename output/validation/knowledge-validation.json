@@ -1,0 +1,88 @@
+{
+  "checkedAt": "2026-10-10T18:20:18.097Z",
+  "deployment": "9fedb7f0-7b08-4983-8c01-63daf337645a",
+  "url": "https://legend-branch.taobe-roshambo.workers.dev/",
+  "database": {
+    "entries": 15,
+    "relationships": 11,
+    "summaries": 14,
+    "tags": 15,
+    "entryTags": 36
+  },
+  "checks": {
+    "health": {
+      "status": 200,
+      "ok": true
+    },
+    "firstSearch": {
+      "query": "美国大萧条",
+      "enrichment": "updated",
+      "added": 3
+    },
+    "repeat": {
+      "query": "美国大萧条",
+      "enrichment": "cached",
+      "added": 0
+    },
+    "tagSearch": {
+      "query": "经济危机",
+      "entryFound": true
+    },
+    "persistentDetail": {
+      "entry": {
+        "id": "wd:Q696482",
+        "name": "美国大萧条",
+        "latinName": "Great Depression in the United States",
+        "kind": "entry",
+        "yearLabel": "1929–1939",
+        "summary": "severe economic crisis in the USA in the 1930s",
+        "tags": [
+          {
+            "id": "wd:Q290178",
+            "name": "经济危机"
+          },
+          {
+            "id": "wd:Q30",
+            "name": "美国"
+          }
+        ],
+        "sources": [
+          {
+            "label": "Wikipedia · 外链索引",
+            "url": "https://en.wikipedia.org/wiki/Great_Depression_in_the_United_States"
+          },
+          {
+            "label": "Wikidata · Q696482",
+            "url": "https://www.wikidata.org/wiki/Q696482"
+          }
+        ],
+        "reviewStatus": "unreviewed"
+      },
+      "relationships": []
+    },
+    "externalOrigin": {
+      "status": 403,
+      "response": {
+        "message": "此站点未连接知识库。"
+      }
+    },
+    "tests": {
+      "passed": 21,
+      "total": 21
+    },
+    "lint": "passed",
+    "build": "passed",
+    "browser": {
+      "local": "Search and source/tag detail verified",
+      "production": "API and deployment verified; browser automation timed out"
+    },
+    "frontend": {
+      "status": 200,
+      "assets": [
+        "/assets/index-FPOaJ27K.js",
+        "/assets/index-DJ949kFH.css"
+      ],
+      "matchesCurrentBuild": true
+    }
+  }
+}

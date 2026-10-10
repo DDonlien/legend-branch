@@ -133,11 +133,12 @@
 
 ### 技术栈与命令
 
-- 技术栈：TypeScript + React + Vite；P1 图谱画布使用原生 SVG。
+- 技术栈：TypeScript + React + Vite；P1 图谱画布使用原生 SVG；共享知识库使用 Cloudflare Workers + D1。
 - 开发命令：`npm run dev`
 - 测试命令：`npm run lint`
 - 构建命令：`npm run build`
-- 发布命令：尚未定义。
+- 后端开发命令：`npm run dev:api`；本地迁移：`npm run db:migrate:local`。
+- 发布命令：`npm run deploy`（需要 Cloudflare 登录）。
 
 ### 文档入口
 
@@ -152,13 +153,13 @@
 - 子功能目录：应用代码位于 `src/`，UI 组件位于 `src/components/`。
 - 资源目录：P1 视觉参考图位于 `output/concepts/`。
 - 文档目录：根目录 `README.md`、`REQUIREMENTS.md`、`DESIGN.md`；讨论记录和执行日志位于 `agent-log/`。
-- 测试目录：尚未创建；当前通过 ESLint、生产构建和浏览器人工验收验证。
+- 测试目录：`tests/`，包含图谱几何和增量知识库回归；结合 ESLint、类型检查、构建和浏览器验证。
 
 ### 子功能文档入口
 
 如果存在子功能，在这里索引：
 
-- `path/to/subfeature/`：说明该子功能职责；文档入口为 `path/to/subfeature/AGENTS.md`。
+- `server/`：共享知识库 API、迁移和来源接入；文档入口为 `server/AGENTS.md`、`server/README.md`、`server/REQUIREMENTS.md`、`server/DESIGN.md`、`server/agent-log/`。
 
 ### 项目特殊约束
 

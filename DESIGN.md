@@ -12,6 +12,7 @@
 - 按钮、图标按钮和卡片使用该版本自带的 Expressive labs：`md-gb-button`、`md-gb-icon-button`、`md-gb-card`。版本固定，避免实验组件和 token 在升级时漂移。
 - 详情关系及来源使用官方 Expressive `md-gb-list` / `md-gb-list-item`；分隔使用 `md-divider`。关系使用组件原生按钮，外链在静态 List Item 中使用带 `noreferrer` 的原生链接。
 - Material Web 没有独立 Search bar 元素；搜索入口使用官方 Filled Text Field 和 Material Symbols，按 M3 Search bar 容器规范组合。
+- 标签使用官方 `md-chip-set` 与 `md-suggestion-chip`；点击标签进行搜索。搜索进度使用 `md-linear-progress`，结果使用现有标准 Elevated Card 和 Expressive List。
 - 图谱连线、文化区块与类型标记属于领域可视化；卡片仍使用官方交互式 Card，使用标准系统角色和组件 token。
 - Vite 将官方 CSS module 引用转换为库随包提供的 Lit CSSResult 等价文件，保持官方组件代码与样式。
 - 规范入口：[Material 3](https://m3.material.io/)、[Material Web](https://github.com/material-components/material-web)。
@@ -94,8 +95,12 @@
 - 相关节点不透明度 100%；其他节点约 14%，其他路径约 6%。被键盘聚焦的淡出卡片恢复清晰，保证可操作。
 - 高亮线条使用约 2.5px 宽度，类别色保持稳定；清除后全部节点恢复。
 - 详情采用标准 Elevated Card 表面，展示类型、名称、原名、年代、文化、简介、关系及外链。
+- 标签放在简介与关系之间，允许换行，采用标准 8px 组件间距与主题角色。
 - 关系及外链采用标准 List Item，明确按钮或链接语义。
-- 搜索和筛选沿用 P1 禁用入口及提示，后续能力范围由 REQUIREMENTS.md 管理。
+- 搜索沿用顶栏原有位置，Enter 或尾部标准图标按钮提交；中文输入法确认文字时不触发搜索。
+- 搜索结果使用右侧非模态浮层，与详情共享阅读空间，点击结果打开同一详情浮层。原有时间图谱、Trace、文化区块和 45° 路径保持不变。
+- 搜索状态明确区分正在增补、已保存、近期缓存、无法连接与空结果；新增资料以文字显示“待复核”，不只依赖颜色。
+- 未知年代写“年代待核实”；没有传播依据时写“尚未记录传播关系”。筛选保持既有禁用入口。
 
 ## 动效与可访问性
 

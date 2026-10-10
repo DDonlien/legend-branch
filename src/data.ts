@@ -10,6 +10,7 @@ export const regions: Region[] = [
 export const nodes: LegendNode[] = [
   {
     id: "hanuman",
+    tags: [{ id: "wd:Q668", name: "印度" }, { id: "myth", name: "神话" }],
     name: "哈奴曼",
     latinName: "Hanuman",
     year: -400,
@@ -23,6 +24,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "monkey-pilgrim",
+    tags: [{ id: "wd:Q148", name: "中国" }, { id: "folklore", name: "民俗" }],
     name: "猴行者 / 取经猴形象",
     latinName: "Monkey Pilgrim",
     year: 1200,
@@ -36,6 +38,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "wuzhiqi",
+    tags: [{ id: "wd:Q148", name: "中国" }, { id: "folklore", name: "民俗" }],
     name: "无支祁",
     latinName: "Wuzhiqi",
     year: 1100,
@@ -49,6 +52,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "sun-wukong",
+    tags: [{ id: "wd:Q148", name: "中国" }, { id: "literature", name: "文学" }, { id: "journey-to-the-west", name: "西游记" }],
     name: "孙悟空《西游记》",
     latinName: "Sun Wukong",
     year: 1592,
@@ -65,6 +69,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "dragon-ball",
+    tags: [{ id: "wd:Q17", name: "日本" }, { id: "manga", name: "漫画" }, { id: "journey-to-the-west", name: "西游记" }],
     name: "《龙珠》孙悟空",
     latinName: "Son Goku",
     year: 1984,
@@ -78,6 +83,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "saiyuki",
+    tags: [{ id: "wd:Q17", name: "日本" }, { id: "manga", name: "漫画" }, { id: "journey-to-the-west", name: "西游记" }],
     name: "《最游记》孙悟空",
     latinName: "Saiyuki · Son Goku",
     year: 1997,
@@ -91,6 +97,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "a-chinese-odyssey",
+    tags: [{ id: "wd:Q148", name: "中国" }, { id: "film", name: "电影" }, { id: "journey-to-the-west", name: "西游记" }],
     name: "《大话西游》至尊宝",
     latinName: "A Chinese Odyssey",
     year: 1995,
@@ -104,6 +111,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "black-myth",
+    tags: [{ id: "wd:Q148", name: "中国" }, { id: "game", name: "游戏" }, { id: "journey-to-the-west", name: "西游记" }],
     name: "《黑神话：悟空》",
     latinName: "Black Myth: Wukong",
     year: 2024,
@@ -117,6 +125,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "ramayana",
+    tags: [{ id: "wd:Q668", name: "印度" }, { id: "literature", name: "文学" }],
     name: "《罗摩衍那》",
     latinName: "Ramayana",
     year: -300,
@@ -130,6 +139,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "zaju",
+    tags: [{ id: "wd:Q148", name: "中国" }, { id: "drama", name: "戏曲" }, { id: "journey-to-the-west", name: "西游记" }],
     name: "《西游记》杂剧",
     latinName: "Journey to the West · Zaju",
     year: 1350,
@@ -143,6 +153,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "tv-journey",
+    tags: [{ id: "wd:Q148", name: "中国" }, { id: "television", name: "电视剧" }, { id: "journey-to-the-west", name: "西游记" }],
     name: "《西游记》电视剧",
     latinName: "Journey to the West · TV",
     year: 1986,
@@ -156,6 +167,7 @@ export const nodes: LegendNode[] = [
   },
   {
     id: "enma",
+    tags: [{ id: "wd:Q17", name: "日本" }, { id: "manga", name: "漫画" }, { id: "journey-to-the-west", name: "西游记" }],
     name: "《最游记 Reload》",
     latinName: "Saiyuki Reload",
     year: 2002,

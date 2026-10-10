@@ -18,6 +18,7 @@ export type LegendNode = {
   kind: NodeKind;
   summary: string;
   sources: LegendLink[];
+  tags: { id: string; name: string }[];
   isTrace: boolean;
 };
 

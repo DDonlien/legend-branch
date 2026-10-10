@@ -41,7 +41,7 @@ md-gb-button:not([disabled]), md-gb-icon-button:not([disabled]), md-gb-card[inte
 .trace-status .material-symbols-rounded { font-size: 20px; }
 .toolbar-actions { display: flex; align-items: center; gap: 8px; }
 .material-search-bar {
-  width: 200px;
+  width: 240px;
   --md-filled-text-field-container-shape: var(--md-sys-shape-corner-full);
   --md-filled-text-field-container-color: var(--md-sys-color-surface-container-highest);
   --md-filled-text-field-disabled-container-color: var(--md-sys-color-surface-container-highest);
@@ -127,6 +127,18 @@ md-gb-button:not([disabled]), md-gb-icon-button:not([disabled]), md-gb-card[inte
 .source-link .material-symbols-rounded { flex-shrink: 0; }
 .source-link:focus-visible { outline: 3px solid var(--md-sys-color-primary); outline-offset: 4px; border-radius: var(--md-sys-shape-corner-extra-small, 4px); }
 .source-list .material-symbols-rounded { font-size: 18px; color: var(--md-sys-color-primary); }
+.entry-tags { margin-bottom: 20px; }
+.search-results { position: absolute; top: 16px; right: 24px; width: min(440px, calc(100% - 36px)); max-height: calc(100% - var(--footer-height) - 40px); overflow: auto; z-index: 6; border-radius: var(--md-sys-shape-corner-extra-large); scrollbar-width: thin; box-shadow: 0 6px 24px color-mix(in srgb, var(--md-sys-color-shadow) 28%, transparent); }
+.search-surface { display: block; width: 100%; }
+.search-surface::part(card) { --container-color: var(--md-sys-color-surface-container-low); --container-shape: var(--md-sys-shape-corner-extra-large); }
+.search-results-content { padding: 16px 20px; }
+.search-results h2 { margin: 0; overflow-wrap: anywhere; }
+.search-status { color: var(--md-sys-color-on-surface-variant); line-height: 20px; }
+.search-list { padding-block: 8px; }
+.search-list md-gb-list-item::part(list-item) { --leading-space: 8px; --trailing-space: 8px; }
+.search-supporting { display: flex; flex-direction: column; gap: 4px; }
+.search-supporting > span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.search-supporting small { color: var(--md-sys-color-on-surface-variant); }
 
 .canvas-footer { position: absolute; inset: auto 0 0; z-index: 4; height: var(--footer-height); display: flex; align-items: center; gap: 24px; padding: 8px 24px; border-top: 1px solid var(--md-sys-color-outline-variant); color: var(--md-sys-color-on-surface-variant); background: var(--md-sys-color-surface-container-low); }
 .legend-items, .legend-items > span, .footer-status { display: flex; align-items: center; }

@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "legend-branch",
+  "main": "server/index.ts",
+  "compatibility_date": "2026-10-10",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "legend-branch-knowledge",
+    "database_id": "e6fd4fab-6b56-47dc-ae27-4748337c8d60",
+    "migrations_dir": "server/migrations"
+  }],
+  "vars": {
+    "ALLOWED_ORIGINS": "https://ddonlien.github.io,http://127.0.0.1:4176,http://127.0.0.1:5176,http://localhost:5173"
+  }
+}
