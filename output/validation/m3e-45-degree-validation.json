@@ -1,0 +1,148 @@
+{
+  "verifiedAt": "2026-10-10T17:31:53.205Z",
+  "environment": "本地 Vite 生产构建预览，未部署到生产托管",
+  "url": "http://127.0.0.1:4176/",
+  "viewport": {
+    "height": 720,
+    "width": 1280
+  },
+  "checks": [
+    {
+      "name": "最终生产构建的全部转折不超过45°，四条主分支各有两处45°衔接",
+      "passed": true,
+      "edges": 11,
+      "entries": [
+        {
+          "angles": [
+            45,
+            45
+          ],
+          "id": "hanuman-to-wukong",
+          "passed": true,
+          "vertices": 4
+        },
+        {
+          "angles": [
+            45,
+            45
+          ],
+          "id": "wuzhiqi-to-wukong",
+          "passed": true,
+          "vertices": 4
+        },
+        {
+          "angles": [
+            45,
+            45
+          ],
+          "id": "pilgrim-to-wukong",
+          "passed": true,
+          "vertices": 4
+        },
+        {
+          "angles": [
+            45.000000000000036,
+            45.000000000000036
+          ],
+          "id": "wukong-to-dragon-ball",
+          "passed": true,
+          "vertices": 4
+        },
+        {
+          "angles": [
+            45.00000000000003,
+            45.00000000000003
+          ],
+          "id": "wukong-to-saiyuki",
+          "passed": true,
+          "vertices": 4
+        },
+        {
+          "angles": [
+            45.00000000000002,
+            45.00000000000002
+          ],
+          "id": "wukong-to-odyssey",
+          "passed": true,
+          "vertices": 4
+        },
+        {
+          "angles": [
+            45.00000000000001,
+            45.00000000000001
+          ],
+          "id": "wukong-to-black-myth",
+          "passed": true,
+          "vertices": 4
+        },
+        {
+          "angles": [
+            45,
+            45,
+            45,
+            45,
+            45,
+            45,
+            45,
+            45
+          ],
+          "id": "ramayana-to-hanuman",
+          "passed": true,
+          "vertices": 10
+        },
+        {
+          "angles": [
+            45,
+            45,
+            45.00000000000108,
+            44.99999999999893
+          ],
+          "id": "zaju-to-wukong",
+          "passed": true,
+          "vertices": 6
+        },
+        {
+          "angles": [
+            45,
+            45,
+            45,
+            45
+          ],
+          "id": "wukong-to-tv",
+          "passed": true,
+          "vertices": 6
+        },
+        {
+          "angles": [
+            45,
+            45,
+            45,
+            45,
+            45,
+            45,
+            45,
+            45
+          ],
+          "id": "saiyuki-to-reload",
+          "passed": true,
+          "vertices": 10
+        }
+      ],
+      "mainPassed": true,
+      "nodes": 12
+    },
+    {
+      "name": "清除Trace仍显示全部12节点",
+      "passed": true
+    },
+    {
+      "name": "恢复原有8节点7关系Trace，详情可关闭",
+      "passed": true
+    },
+    {
+      "name": "最终生产预览无控制台错误或警告",
+      "passed": true,
+      "logs": []
+    }
+  ]
+}

@@ -52,6 +52,61 @@ test("tracks avoid all card interiors, rather than passing behind unreadable lab
   }
 });
 
+test("main Trace branches use a horizontal-diagonal-horizontal transition with two 45-degree turns", () => {
+  for (const edge of edges.filter((edge) => edge.from === "sun-wukong" && edge.isTrace)) {
+    const { points, path } = edgeToRoute(edge);
+    assert.equal(points.length, 4, edge.id);
+    assert.equal(points[0].y, points[1].y, edge.id);
+    assert.equal(points[2].y, points[3].y, edge.id);
+    assert.ok(Math.abs((points[2].x - points[1].x) - Math.abs(points[2].y - points[1].y)) < 1e-7, edge.id);
+    assert.ok(!/[QCA]/.test(path), edge.id);
+  }
+});
+
+test("the main diagonal branches do not cross after leaving their shared source track", () => {
+  const routes = edges.filter((edge) => edge.from === "sun-wukong" && edge.isTrace).map(edgeToRoute);
+  const side = (a: { x: number; y: number }, b: { x: number; y: number }, p: { x: number; y: number }) =>
+    (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+  for (let i = 0; i < routes.length; i++) for (let j = i + 1; j < routes.length; j++) {
+    const a = routes[i].points;
+    const b = routes[j].points;
+    for (let k = 2; k < a.length; k++) for (let l = 2; l < b.length; l++) {
+      const crosses = side(a[k - 1], a[k], b[l - 1]) * side(a[k - 1], a[k], b[l]) < -1e-7 &&
+        side(b[l - 1], b[l], a[k - 1]) * side(b[l - 1], b[l], a[k]) < -1e-7;
+      assert.equal(crosses, false, `branches ${i} and ${j} cross`);
+    }
+  }
+});
+
+test("tight merges and backward links keep horizontal ports and turn by at most 45 degrees", () => {
+  for (const edge of edges) {
+    const { points } = edgeToRoute(edge);
+    assert.equal(points[0].y, points[1].y, edge.id);
+    assert.equal(points.at(-1)!.y, points.at(-2)!.y, edge.id);
+    const vectors = points.slice(1).map((point, index) => ({ x: point.x - points[index].x, y: point.y - points[index].y }));
+    for (const vector of vectors) {
+      assert.ok(vector.x !== 0 || vector.y !== 0, edge.id);
+      assert.ok(vector.x === 0 || vector.y === 0 || Math.abs(Math.abs(vector.x) - Math.abs(vector.y)) < 1e-7, edge.id);
+    }
+    for (let index = 1; index < vectors.length; index++) {
+      const a = vectors[index - 1];
+      const b = vectors[index];
+      const angle = Math.abs(Math.atan2(a.x * b.y - a.y * b.x, a.x * b.x + a.y * b.y));
+      assert.ok(angle <= Math.PI / 4 + 1e-7, edge.id);
+    }
+  }
+});
+
+test("diagonal obstacle checks detect interior crossings while allowing boundary and corner contact", () => {
+  const rect = { x: 0, y: 0, width: 10, height: 10 };
+  assert.equal(segmentIntersectsRect({ x: -5, y: -5 }, { x: 15, y: 15 }, rect), true);
+  assert.equal(segmentIntersectsRect({ x: -1, y: 5 }, { x: 5, y: -1 }, rect), true);
+  assert.equal(segmentIntersectsRect({ x: 5, y: 5 }, { x: 15, y: 15 }, rect), true);
+  assert.equal(segmentIntersectsRect({ x: -5, y: 5 }, { x: 5, y: -5 }, rect), false);
+  assert.equal(segmentIntersectsRect({ x: -5, y: 0 }, { x: 15, y: 0 }, rect), false);
+  assert.equal(segmentIntersectsRect({ x: 10, y: -5 }, { x: 10, y: 15 }, rect), false);
+});
+
 test("merges and fan-out retain separate real relationships and deterministic track identities", () => {
   const centerInputs = edges.filter((edge) => edge.to === "sun-wukong");
   const centerOutputs = edges.filter((edge) => edge.from === "sun-wukong");
