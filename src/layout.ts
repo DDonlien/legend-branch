@@ -43,6 +43,9 @@ export const nodeById = new Map(nodes.map((node) => [node.id, node]));
 
 export type Point = { x: number; y: number };
 export type Rect = Point & { width: number; height: number };
+export type RouteSegment =
+  | { kind: "line"; start: Point; end: Point }
+  | { kind: "curve"; start: Point; control1: Point; control2: Point; end: Point };
 
 export function nodeToPoint(node: LegendNode): Point {
   const region = regionLayouts.find((item) => item.id === node.region);
@@ -88,9 +91,57 @@ function simplifyPoints(points: Point[]) {
   });
 }
 
-function angledPath(points: Point[]) {
+function triangleIntersectsRect(a: Point, b: Point, c: Point, rect: Rect) {
+  if ([[a, b], [b, c], [c, a]].some(([start, end]) => segmentIntersectsRect(start, end, rect))) return true;
+  const center = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+  const side = (start: Point, end: Point) => (end.x - start.x) * (center.y - start.y) - (end.y - start.y) * (center.x - start.x);
+  const sides = [side(a, b), side(b, c), side(c, a)];
+  return sides.every((value) => value > 1e-7) || sides.every((value) => value < -1e-7);
+}
+
+function roundedPath(points: Point[], obstacles: Rect[]) {
+  const segments: RouteSegment[] = [];
+  let start = points[0];
+  const lineTo = (end: Point) => {
+    if (Math.hypot(end.x - start.x, end.y - start.y) > 1e-7) segments.push({ kind: "line", start, end });
+    start = end;
+  };
+  for (let index = 1; index < points.length - 1; index++) {
+    const previous = points[index - 1];
+    const corner = points[index];
+    const next = points[index + 1];
+    const incomingLength = Math.hypot(corner.x - previous.x, corner.y - previous.y);
+    const outgoingLength = Math.hypot(next.x - corner.x, next.y - corner.y);
+    const incoming = { x: (corner.x - previous.x) / incomingLength, y: (corner.y - previous.y) / incomingLength };
+    const outgoing = { x: (next.x - corner.x) / outgoingLength, y: (next.y - corner.y) / outgoingLength };
+    let reach = Math.min(24, incomingLength / 2, outgoingLength / 2);
+    const trim = () => [
+      { x: corner.x - incoming.x * reach, y: corner.y - incoming.y * reach },
+      { x: corner.x + outgoing.x * reach, y: corner.y + outgoing.y * reach },
+    ];
+    let [approach, depart] = trim();
+    // The curve's control hull stays inside this triangle. Reduce its reach
+    // near cards so a rounded corner cannot cut across a safe straight route.
+    while (obstacles.some((rect) => triangleIntersectsRect(approach, corner, depart, rect))) {
+      reach /= 2;
+      [approach, depart] = trim();
+    }
+    const angle = Math.acos(Math.max(-1, Math.min(1, incoming.x * outgoing.x + incoming.y * outgoing.y)));
+    const handle = reach * (4 / 3) * Math.tan(angle / 4) / Math.tan(angle / 2);
+    lineTo(approach);
+    segments.push({
+      kind: "curve", start: approach, end: depart,
+      control1: { x: approach.x + incoming.x * handle, y: approach.y + incoming.y * handle },
+      control2: { x: depart.x - outgoing.x * handle, y: depart.y - outgoing.y * handle },
+    });
+    start = depart;
+  }
+  lineTo(points[points.length - 1]);
   const format = (point: Point) => `${Number(point.x.toFixed(2))} ${Number(point.y.toFixed(2))}`;
-  return points.map((point, index) => `${index === 0 ? "M" : "L"} ${format(point)}`).join(" ");
+  const path = `M ${format(points[0])} ${segments.map((segment) => segment.kind === "line"
+    ? `L ${format(segment.end)}`
+    : `C ${format(segment.control1)} ${format(segment.control2)} ${format(segment.end)}`).join(" ")}`;
+  return { path, segments };
 }
 
 function diagonalRoute(start: Point, end: Point, obstacles: Rect[], preferredX: number): Point[] | null {
@@ -139,9 +190,27 @@ function routeAroundCards(start: Point, end: Point, obstacles: Rect[], preferred
 
   // A rectilinear visibility grid handles tight merges and backward-dated
   // relationships without crossing cards or inventing chronological parents.
+  const gapXs: number[] = [];
+  const gapYs: number[] = [];
+  for (let first = 0; first < obstacles.length; first++) for (let last = first + 1; last < obstacles.length; last++) {
+    const a = obstacles[first];
+    const b = obstacles[last];
+    const [above, below] = a.y < b.y ? [a, b] : [b, a];
+    if (above.y + above.height <= below.y && Math.max(a.x, b.x) < Math.min(a.x + a.width, b.x + b.width)) {
+      gapYs.push((above.y + above.height + below.y) / 2);
+    }
+    const [left, right] = a.x < b.x ? [a, b] : [b, a];
+    if (left.x + left.width <= right.x && Math.max(a.y, b.y) < Math.min(a.y + a.height, b.y + b.height)) {
+      gapXs.push((left.x + left.width + right.x) / 2);
+    }
+  }
+  // Include narrow gap centerlines: outer-card offsets miss the 8px channel
+  // between adjacent rows, causing needlessly long loops around both cards.
   const xs = [...new Set([start.x, end.x, preferredX, LABEL_WIDTH + 16, CANVAS_WIDTH - 16,
+    ...gapXs,
     ...obstacles.flatMap((rect) => [rect.x - 8, rect.x + rect.width + 8])])].sort((a, b) => a - b);
   const ys = [...new Set([start.y, end.y, TIMELINE_HEIGHT + 4, CANVAS_HEIGHT - 4,
+    ...gapYs,
     ...obstacles.flatMap((rect) => [rect.y - 8, rect.y + rect.height + 8])])].sort((a, b) => a - b);
   const pointAt = (index: number) => ({ x: xs[index % xs.length], y: ys[Math.floor(index / xs.length)] });
   const first = ys.indexOf(start.y) * xs.length + xs.indexOf(start.x);
@@ -212,5 +281,7 @@ export function edgeToRoute(edge: LegendEdge) {
     ...routeAroundCards({ x: start.x + 8, y: start.y }, { x: end.x - 8, y: end.y }, obstacles, preferredX),
     end,
   ], obstacles);
-  return { points, path: angledPath(points), track: from.id === "sun-wukong" ? to.region : from.region };
+  // Routing has 4px clearance; curves retain 2px for the 2.5px-wide stroke.
+  const curveObstacles = obstacles.map((rect) => ({ x: rect.x + 2, y: rect.y + 2, width: rect.width - 4, height: rect.height - 4 }));
+  return { points, ...roundedPath(points, curveObstacles), track: from.id === "sun-wukong" ? to.region : from.region };
 }

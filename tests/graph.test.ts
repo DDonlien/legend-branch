@@ -5,6 +5,29 @@ import { edges, nodes } from "../src/data";
 import { CANVAS_HEIGHT, CANVAS_WIDTH, CARD_WIDTH, edgeToRoute, nodeById, nodeToPoint, nodeToRect, regionLayouts, segmentIntersectsRect, timelineTicks, yearToX } from "../src/layout";
 import { graphTrackColors, materialColors } from "../src/theme";
 
+// Sample the serialized SVG, including its rounding precision, independently
+// of the routing model. Line segments are checked directly between samples.
+function renderedSamples(path: string) {
+  const samples: { x: number; y: number }[] = [];
+  for (const command of path.match(/[MLC][^MLC]*/g) ?? []) {
+    const values = command.slice(1).trim().split(/\s+/).map(Number);
+    if (command[0] !== "C") {
+      samples.push({ x: values[0], y: values[1] });
+      continue;
+    }
+    const start = samples.at(-1)!;
+    for (let step = 1; step <= 80; step++) {
+      const t = step / 80;
+      const u = 1 - t;
+      samples.push({
+        x: u ** 3 * start.x + 3 * u ** 2 * t * values[0] + 3 * u * t ** 2 * values[2] + t ** 3 * values[4],
+        y: u ** 3 * start.y + 3 * u ** 2 * t * values[1] + 3 * u * t ** 2 * values[3] + t ** 3 * values[5],
+      });
+    }
+  }
+  return samples;
+}
+
 test("the expanded axis preserves every historical date and chronology", () => {
   for (const tick of timelineTicks) assert.equal(yearToX(tick.year), tick.x);
   for (let year = -501; year <= 2051; year++) assert.ok(yearToX(year + 1) > yearToX(year));
@@ -45,9 +68,15 @@ test("all actual relationships terminate on the correct card ports, including th
 
 test("tracks avoid all card interiors, rather than passing behind unreadable labels", () => {
   for (const edge of edges) {
-    const { points } = edgeToRoute(edge);
+    const { points, path } = edgeToRoute(edge);
     for (let index = 1; index < points.length; index++) for (const node of nodes) {
       assert.equal(segmentIntersectsRect(points[index - 1], points[index], nodeToRect(node)), false, `${edge.id} crosses ${node.id}`);
+    }
+    const samples = renderedSamples(path);
+    for (let index = 1; index < samples.length; index++) for (const node of nodes) {
+      const card = nodeToRect(node);
+      const strokeClearance = { x: card.x - 1.5, y: card.y - 1.5, width: card.width + 3, height: card.height + 3 };
+      assert.equal(segmentIntersectsRect(samples[index - 1], samples[index], strokeClearance), false, `${edge.id} curve/stroke crosses ${node.id}`);
     }
   }
 });
@@ -59,18 +88,55 @@ test("main Trace branches use a horizontal-diagonal-horizontal transition with t
     assert.equal(points[0].y, points[1].y, edge.id);
     assert.equal(points[2].y, points[3].y, edge.id);
     assert.ok(Math.abs((points[2].x - points[1].x) - Math.abs(points[2].y - points[1].y)) < 1e-7, edge.id);
-    assert.ok(!/[QCA]/.test(path), edge.id);
+    assert.equal((path.match(/C/g) ?? []).length, 2, edge.id);
   }
 });
 
-test("the main diagonal branches do not cross after leaving their shared source track", () => {
-  const routes = edges.filter((edge) => edge.from === "sun-wukong" && edge.isTrace).map(edgeToRoute);
+test("adjacent and backward-linked cards use the channel between rows rather than an outside loop", () => {
+  for (const id of ["saiyuki-to-reload", "ramayana-to-hanuman"]) {
+    const edge = edges.find((item) => item.id === id)!;
+    const source = nodeToRect(nodeById.get(edge.from)!);
+    const target = nodeToRect(nodeById.get(edge.to)!);
+    const [above, below] = source.y < target.y ? [source, target] : [target, source];
+    const left = Math.max(source.x, target.x);
+    const right = Math.min(source.x + source.width, target.x + target.width);
+    const { points, segments } = edgeToRoute(edge);
+    assert.ok(points.every((point) => point.y >= above.y + above.height / 2 && point.y <= below.y + below.height / 2), id);
+    assert.ok(points.every((point) => point.x <= source.x + source.width + 24), id);
+    assert.ok(segments.some((segment) => segment.kind === "line" && segment.start.y === segment.end.y &&
+      segment.start.y > above.y + above.height && segment.start.y < below.y &&
+      Math.min(segment.start.x, segment.end.x) <= left && Math.max(segment.start.x, segment.end.x) >= right), id);
+  }
+});
+
+test("rounded lane changes keep continuous tangents and horizontal card ports", () => {
+  const tangent = (a: { x: number; y: number }, b: { x: number; y: number }) => ({ x: b.x - a.x, y: b.y - a.y });
+  for (const edge of edges) {
+    const { segments } = edgeToRoute(edge);
+    assert.equal(segments[0].kind, "line", edge.id);
+    assert.equal(segments[0].start.y, segments[0].end.y, edge.id);
+    assert.equal(segments.at(-1)!.kind, "line", edge.id);
+    assert.equal(segments.at(-1)!.start.y, segments.at(-1)!.end.y, edge.id);
+    for (let index = 1; index < segments.length; index++) {
+      const previous = segments[index - 1];
+      const next = segments[index];
+      assert.deepEqual(previous.end, next.start, edge.id);
+      const a = tangent(previous.kind === "curve" ? previous.control2 : previous.start, previous.end);
+      const b = tangent(next.start, next.kind === "curve" ? next.control1 : next.end);
+      assert.ok(Math.abs(a.x * b.y - a.y * b.x) < 1e-7, edge.id);
+      assert.ok(a.x * b.x + a.y * b.y > 0, edge.id);
+    }
+  }
+});
+
+test("the main smoothed branches do not cross after leaving their shared source track", () => {
+  const routes = edges.filter((edge) => edge.from === "sun-wukong" && edge.isTrace).map((edge) => renderedSamples(edgeToRoute(edge).path));
   const side = (a: { x: number; y: number }, b: { x: number; y: number }, p: { x: number; y: number }) =>
     (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
   for (let i = 0; i < routes.length; i++) for (let j = i + 1; j < routes.length; j++) {
-    const a = routes[i].points;
-    const b = routes[j].points;
-    for (let k = 2; k < a.length; k++) for (let l = 2; l < b.length; l++) {
+    const a = routes[i];
+    const b = routes[j];
+    for (let k = 1; k < a.length; k++) for (let l = 1; l < b.length; l++) {
       const crosses = side(a[k - 1], a[k], b[l - 1]) * side(a[k - 1], a[k], b[l]) < -1e-7 &&
         side(b[l - 1], b[l], a[k - 1]) * side(b[l - 1], b[l], a[k]) < -1e-7;
       assert.equal(crosses, false, `branches ${i} and ${j} cross`);
