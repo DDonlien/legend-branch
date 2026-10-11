@@ -44,7 +44,7 @@ P1 只验证一件事：以“孙悟空”为唯一样例时，“横向时间 �
 - Google Material Color Utilities / HCT 色彩角色
 - 自托管 Roboto Flex 与 Material Symbols Rounded
 
-Expressive 按钮、图标按钮和卡片直接使用官方组件。Material Web 尚无独立 Search bar 元素，搜索入口以官方 Filled Text Field 按 M3 Search bar 规范组合。实验组件版本固定，构建适配使用包内官方等价样式。
+Expressive 按钮、图标按钮和卡片直接使用官方组件。Material Web 尚无独立 Search bar 元素，顶栏搜索由官方 Filled Text Field 与 Expressive 图标按钮组合，通过组件 token 调整紧凑尺寸。实验组件版本固定，构建适配使用包内官方等价样式。
 
 ## 快速开始
 

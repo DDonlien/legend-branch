@@ -1,0 +1,20 @@
+{
+  "verified_at": "2026-10-11T13:07:11.020891+00:00",
+  "url": "https://legend-branch.taobe-roshambo.workers.dev/?version=68d15426",
+  "worker_version": "68d15426-b92a-4b23-9011-da7ad3c64134",
+  "html_status": 200,
+  "assets": {
+    "/assets/index-C_VhcdFs.css": {
+      "status": 200,
+      "sha256": "099fb422eb20ac4de425a85cddf3c29c15177c9de421f4d1104bc86e18c45e38",
+      "matches_local_build": true
+    },
+    "/assets/index-UH913vxB.js": {
+      "status": 200,
+      "sha256": "7fa1e97baaa207e6eedc89a50100142f1a845dc37de03ff3eab4197c33558648",
+      "matches_local_build": true
+    }
+  },
+  "compact_search_styles_present": true,
+  "visual_verification": "Not completed: browser automation connections repeatedly timed out."
+}

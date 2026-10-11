@@ -11,7 +11,7 @@
 - 使用 Google 官方 `@material/web@2.5.0`，通过 `@lit/react` 接入 React。
 - 按钮、图标按钮和卡片使用该版本自带的 Expressive labs：`md-gb-button`、`md-gb-icon-button`、`md-gb-card`。版本固定，避免实验组件和 token 在升级时漂移。
 - 详情关系及来源使用官方 Expressive `md-gb-list` / `md-gb-list-item`；分隔使用 `md-divider`。关系使用组件原生按钮，外链在静态 List Item 中使用带 `noreferrer` 的原生链接。
-- Material Web 没有独立 Search bar 元素；搜索入口使用官方 Filled Text Field 和 Material Symbols，按 M3 Search bar 容器规范组合。
+- Material Web 没有独立 Search bar 元素；顶栏搜索使用官方 Filled Text Field、Material Symbols 和 Expressive 图标按钮，通过组件 token 设置紧凑尺寸。
 - 标签使用官方 `md-chip-set` 与 `md-suggestion-chip`；点击标签进行搜索。搜索进度使用 `md-linear-progress`，结果使用现有标准 Elevated Card 和 Expressive List。
 - 分组选择使用官方 Filter Chip；故事节点与关系编辑使用官方 Dialog、Filled Text Field 与 Filled Select。React 桥接显式订阅标准输入事件，支持正常输入与搜索。
 - 图谱连线、文化区块与类型标记属于领域可视化；卡片仍使用官方交互式 Card，使用标准系统角色和组件 token。
@@ -53,7 +53,7 @@
 
 - 使用 M3 形状阶梯：8、12、16、28px 以及全圆角。
 - 小型标准 Expressive 按钮高 40px，继承官方形状过渡、涟漪、禁用状态和焦点环。
-- 搜索容器高 56px，全圆角；状态条使用标准 tonal 表面。
+- 顶栏搜索容器高 40px，与同排小型按钮对齐，全圆角；使用 14px / 20px 输入字级、上下各 10px 留白、20px 图标和 32px 尾部图标按钮。宽度以 224px 为上限，空间不足时收缩，不拉伸占满工具栏；状态条使用标准 tonal 表面。
 - 图谱 Card 使用标准 medium 12px 圆角；详情浮层使用 extra-large 28px 圆角。
 - 布局遵循 4px 基础网格，以 8、12、16、20、24px 为常用间距。
 - 优先使用组件原生状态层和焦点反馈，避免手工复制按钮与卡片交互皮肤。

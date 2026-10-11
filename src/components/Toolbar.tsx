@@ -59,7 +59,7 @@ export function Toolbar({ traceActive, toolbarVisible, onToggleTrace, onToggleTo
           onCompositionStart={() => { composing.current = true; }} onCompositionEnd={() => { composing.current = false; }}
           onKeyDown={(event) => { if (event.key === "Enter" && !composing.current && !event.nativeEvent.isComposing) { event.preventDefault(); submitSearch(); } }}>
           <MaterialIcon name="search" slot="leading-icon" />
-          <MaterialIconButton slot="trailing-icon" color="standard" size="sm" type="button" aria-label="开始搜索" disabled={query.trim().length < 2 || query.trim().length > 120} onClick={submitSearch}>
+          <MaterialIconButton slot="trailing-icon" color="standard" size="xs" type="button" aria-label="开始搜索" disabled={query.trim().length < 2 || query.trim().length > 120} onClick={submitSearch}>
             <MaterialIcon name="arrow_forward" />
           </MaterialIconButton>
         </MaterialTextField>
