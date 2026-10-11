@@ -4,7 +4,7 @@ import { MaterialButton, MaterialCard, MaterialIcon, MaterialIconButton, Materia
 type ToolbarProps = {
   traceActive: boolean;
   toolbarVisible: boolean;
-  onToggleTrace: () => void;
+  onClearTrace: () => void;
   onToggleToolbar: () => void;
   onSearch: (query: string) => void;
   query: string;
@@ -17,7 +17,7 @@ type ToolbarProps = {
   onAddRelation: () => void;
 };
 
-export function Toolbar({ traceActive, toolbarVisible, onToggleTrace, onToggleToolbar, onSearch, query, onQueryChange, traceName, projectName, onProjects, onGroups, onAddNode, onAddRelation }: ToolbarProps) {
+export function Toolbar({ traceActive, toolbarVisible, onClearTrace, onToggleToolbar, onSearch, query, onQueryChange, traceName, projectName, onProjects, onGroups, onAddNode, onAddRelation }: ToolbarProps) {
   const composing = useRef(false);
   const submitSearch = () => { if (query.trim().length >= 2 && query.trim().length <= 120) onSearch(query); };
   if (!toolbarVisible) {
@@ -42,10 +42,9 @@ export function Toolbar({ traceActive, toolbarVisible, onToggleTrace, onToggleTo
         </div>
       </MaterialCard>
       <div className="toolbar-actions">
-        <MaterialButton color={traceActive ? "tonal" : "filled"} size="sm" type="button" onClick={onToggleTrace}>
-          <MaterialIcon name={traceActive ? "close" : "conversion_path"} />
-          {traceActive ? "清除 Trace" : `Trace ${traceName}`}
-        </MaterialButton>
+        {traceActive ? <MaterialButton color="tonal" size="sm" type="button" onClick={onClearTrace}>
+          <MaterialIcon name="close" />清除 Trace
+        </MaterialButton> : null}
         <MaterialButton color="outlined" size="sm" type="button" onClick={onProjects} title={projectName ?? "共享知识库"} aria-label="切换知识库或个人项目">
           <MaterialIcon name={projectName ? "folder" : "public"} />{projectName ? "个人项目" : "知识库"}
         </MaterialButton>

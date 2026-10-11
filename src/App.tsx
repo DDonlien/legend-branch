@@ -90,7 +90,7 @@ export function App() {
       <Toolbar
         traceActive={traceActive}
         toolbarVisible={toolbarVisible}
-        onToggleTrace={() => setTraceActive((active) => !active)}
+        onClearTrace={() => setTraceActive(false)}
         onToggleToolbar={() => setToolbarVisible((visible) => !visible)}
         onSearch={search}
         query={query}
