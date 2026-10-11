@@ -1,16 +1,19 @@
-import { normalizeSearch, type EntryDetail, type KnowledgeEntry, type KnowledgeRelation } from "../src/knowledge";
+import { normalizeSearch, type EntryDetail, type GraphPage, type GraphRelation, type KnowledgeEntry, type KnowledgeRelation } from "../src/knowledge";
 import type { Database, Discovery, Statement } from "./model";
 
 type Row = {
   id: string; name: string; latin_name: string | null; kind: KnowledgeEntry["kind"];
   year_label: string | null; review_status: KnowledgeEntry["reviewStatus"];
-  summary: string | null; tags: string; sources: string;
+  summary: string | null; tags: string; sources: string; placement: string | null;
 };
 const entrySelect = `SELECT e.*,
   (SELECT body FROM summaries WHERE entry_id = e.id
    ORDER BY (quality = 'curated') DESC, retrieved_at DESC, source_url LIMIT 1) AS summary,
-  COALESCE((SELECT json_group_array(json_object('id', id, 'name', name)) FROM
-    (SELECT DISTINCT t.id, t.name FROM entry_tags et JOIN tags t ON t.id = et.tag_id WHERE et.entry_id = e.id ORDER BY t.name)), '[]') AS tags,
+  (SELECT json_object('year', year, 'endYear', end_year, 'sourceUrl', source_url, 'quality', quality,
+    'preferredGroup', preferred_group, 'rowHint', row_hint, 'defaultTrace', json(CASE WHEN default_trace THEN 'true' ELSE 'false' END))
+    FROM entry_placements WHERE entry_id = e.id) AS placement,
+  COALESCE((SELECT json_group_array(json_object('id', id, 'name', name, 'category', category)) FROM
+    (SELECT DISTINCT t.id, t.name, t.category FROM entry_tags et JOIN tags t ON t.id = et.tag_id WHERE et.entry_id = e.id ORDER BY t.name)), '[]') AS tags,
   COALESCE((SELECT json_group_array(json_object('label', s.label, 'url', s.url)) FROM entry_sources es
     JOIN sources s ON s.url = es.source_url WHERE es.entry_id = e.id), '[]') AS sources
   FROM entries e`;
@@ -21,6 +24,7 @@ function entryFromRow(row: Row): KnowledgeEntry {
     kind: row.kind, yearLabel: row.year_label ?? undefined,
     summary: row.summary ?? "来源尚未提供梗概。", tags: JSON.parse(row.tags),
     sources: JSON.parse(row.sources), reviewStatus: row.review_status,
+    placement: row.placement ? JSON.parse(row.placement) : undefined,
   };
 }
 
@@ -40,6 +44,21 @@ function insertRows(db: Database, table: string, columns: string[], rows: (strin
 export class KnowledgeStore {
   constructor(private db: Database) {}
 
+  async graph(cursor = ""): Promise<GraphPage> {
+    const rows = (await this.db.prepare(`${entrySelect} WHERE e.id > ? ORDER BY e.id LIMIT 201`).bind(cursor).all<Row>()).results;
+    const entries = rows.slice(0, 200).map(entryFromRow);
+    const last = entries.at(-1)?.id ?? cursor;
+    const relationships = (await this.db.prepare(`SELECT r.*,
+      (SELECT json_group_array(json_object('label', s.label, 'url', s.url)) FROM relationship_sources rs
+       JOIN sources s ON s.url = rs.source_url WHERE rs.relationship_id = r.id) AS sources
+      FROM relationships r WHERE r.from_id > ? AND r.from_id <= ? ORDER BY r.id`).bind(cursor, last).all<{
+        id: string; from_id: string; to_id: string; relation: string; confidence: GraphRelation["confidence"];
+        debated: number; review_status: GraphRelation["reviewStatus"]; sources: string;
+      }>()).results.map((r) => ({ id: r.id, from: r.from_id, to: r.to_id, relation: r.relation,
+        confidence: r.confidence, debated: Boolean(r.debated), reviewStatus: r.review_status, sources: JSON.parse(r.sources) }));
+    return { entries, relationships, nextCursor: rows.length > 200 ? last : null };
+  }
+
   async search(query: string, extraIds: string[] = []): Promise<KnowledgeEntry[]> {
     // LIKE wildcards are escaped: '%' searches for a literal percent sign.
     const key = normalizeSearch(query);
@@ -56,31 +75,31 @@ export class KnowledgeStore {
   async detail(id: string): Promise<EntryDetail | null> {
     const row = await this.db.prepare(`${entrySelect} WHERE e.id = ?`).bind(id).first<Row>();
     if (!row) return null;
-    const related = await this.db.prepare(`SELECT r.*, target.id AS target_id, target.name AS target_name,
+    const related = await this.db.prepare(`SELECT r.*, target.id AS target_id, target.name AS target_name, target.year_label AS target_year_label,
       (SELECT json_group_array(json_object('label', s.label, 'url', s.url)) FROM relationship_sources rs
        JOIN sources s ON s.url = rs.source_url WHERE rs.relationship_id = r.id) AS sources
       FROM relationships r JOIN entries target ON target.id = CASE WHEN r.from_id = ? THEN r.to_id ELSE r.from_id END
       WHERE r.from_id = ? OR r.to_id = ? ORDER BY r.review_status, r.id`).bind(id, id, id).all<{
         id: string; from_id: string; to_id: string; relation: string; confidence: KnowledgeRelation["confidence"];
-        debated: number; review_status: KnowledgeRelation["reviewStatus"]; sources: string; target_id: string; target_name: string;
+        debated: number; review_status: KnowledgeRelation["reviewStatus"]; sources: string; target_id: string; target_name: string; target_year_label: string | null;
       }>();
     return {
       entry: entryFromRow(row),
       relationships: related.results.map((r) => ({ id: r.id, from: r.from_id, to: r.to_id, relation: r.relation,
         confidence: r.confidence, debated: Boolean(r.debated), reviewStatus: r.review_status,
-        sources: JSON.parse(r.sources), target: { id: r.target_id, name: r.target_name } })),
+        sources: JSON.parse(r.sources), target: { id: r.target_id, name: r.target_name, yearLabel: r.target_year_label ?? undefined } })),
     };
   }
 
   async recentSearch(query: string) {
-    return this.db.prepare("SELECT completed_at, status, entry_ids FROM search_runs WHERE query = ?")
-      .bind(normalizeSearch(query)).first<{ completed_at: string; status: string; entry_ids: string }>();
+    return this.db.prepare("SELECT completed_at, status, entry_ids, data_version FROM search_runs LEFT JOIN search_data_versions USING(query) WHERE query = ?")
+      .bind(normalizeSearch(query)).first<{ completed_at: string; status: string; entry_ids: string; data_version: number }>();
   }
 
   async recordFailure(query: string, now: string) {
-    await this.db.batch([this.db.prepare(`INSERT INTO search_runs VALUES (?, ?, ?, 'failed', '[]')
+    await this.db.batch([this.db.prepare(`INSERT INTO search_runs(query, display_query, completed_at, status, entry_ids) VALUES (?, ?, ?, 'failed', '[]')
       ON CONFLICT(query) DO UPDATE SET completed_at = excluded.completed_at, status = 'failed'`)
-      .bind(normalizeSearch(query), query, now)]);
+      .bind(normalizeSearch(query), query, now), this.db.prepare("INSERT INTO search_data_versions VALUES (?, 2) ON CONFLICT(query) DO UPDATE SET data_version = 2").bind(normalizeSearch(query))]);
   }
 
   async merge(discovery: Discovery, now: string, query?: string): Promise<{ added: number; ids: string[] }> {
@@ -107,14 +126,18 @@ export class KnowledgeStore {
       ...insertRows(this.db, "aliases", ["entry_id", "name", "search_key"], entries.flatMap((e) => [...new Set([e.name, e.latinName ?? "", ...e.aliases])].filter(Boolean).map((name) => [e.id, name, normalizeSearch(name)])), "ON CONFLICT DO NOTHING"),
       ...insertRows(this.db, "entry_sources", ["entry_id", "source_url", "first_seen", "last_seen"], entries.flatMap((e) => e.sources.map((s) => [e.id, s.url, now, now])), "ON CONFLICT(entry_id, source_url) DO UPDATE SET last_seen = excluded.last_seen"),
       ...insertRows(this.db, "summaries", ["entry_id", "body", "source_url", "quality", "retrieved_at"], entries.filter((e) => e.summary && e.sources.length).map((e) => [e.id, e.summary, e.sources[0].url, e.reviewStatus, now]), "ON CONFLICT(entry_id, source_url, body) DO UPDATE SET retrieved_at = excluded.retrieved_at"),
-      ...insertRows(this.db, "tags", ["id", "name", "search_key"], entries.flatMap((e) => e.tags.map((t) => [t.id, t.name, normalizeSearch(t.name)])), "ON CONFLICT DO NOTHING"),
+      ...insertRows(this.db, "tags", ["id", "name", "search_key", "category"], entries.flatMap((e) => e.tags.map((t) => [t.id, t.name, normalizeSearch(t.name), t.category ?? "topic"])), "ON CONFLICT(id) DO UPDATE SET category = excluded.category WHERE tags.category = 'topic'"),
       ...insertRows(this.db, "entry_tags", ["entry_id", "tag_id", "source_url"], entries.flatMap((e) => e.tags.map((t) => [e.id, t.id, e.sources[0].url])), "ON CONFLICT DO NOTHING"),
       ...insertRows(this.db, "relationships", ["id", "from_id", "to_id", "relation", "confidence", "debated", "review_status"], relationships.map((r) => [r.id, r.from, r.to, r.relation, r.confidence, Number(r.debated), r.reviewStatus]), "ON CONFLICT DO NOTHING"),
       ...insertRows(this.db, "relationship_sources", ["relationship_id", "source_url"], relationships.flatMap((r) => r.sources.map((s) => [r.id, s.url])), "ON CONFLICT DO NOTHING"),
+      ...insertRows(this.db, "entry_placements", ["entry_id", "year", "end_year", "source_url", "quality", "preferred_group", "row_hint", "default_trace"],
+        entries.flatMap((e) => e.placement && e.placement.sourceUrl ? [[e.id, e.placement.year, e.placement.endYear ?? null, e.placement.sourceUrl, e.placement.quality, e.placement.preferredGroup ?? null, e.placement.rowHint ?? null, Number(e.placement.defaultTrace ?? false)]] : []),
+        "ON CONFLICT(entry_id) DO UPDATE SET year = excluded.year, end_year = excluded.end_year, source_url = excluded.source_url WHERE entry_placements.quality = 'sourced'"),
     ];
-    if (query !== undefined) statements.push(this.db.prepare(`INSERT INTO search_runs VALUES (?, ?, ?, ?, ?)
+    if (query !== undefined) statements.push(this.db.prepare(`INSERT INTO search_runs(query, display_query, completed_at, status, entry_ids) VALUES (?, ?, ?, ?, ?)
       ON CONFLICT(query) DO UPDATE SET display_query = excluded.display_query, completed_at = excluded.completed_at,
-      status = excluded.status, entry_ids = excluded.entry_ids`).bind(normalizeSearch(query), query, now, ids.length ? "success" : "empty", JSON.stringify(ids)));
+      status = excluded.status, entry_ids = excluded.entry_ids`).bind(normalizeSearch(query), query, now, ids.length ? "success" : "empty", JSON.stringify(ids)),
+      this.db.prepare("INSERT INTO search_data_versions VALUES (?, 2) ON CONFLICT(query) DO UPDATE SET data_version = 2").bind(normalizeSearch(query)));
     // D1 batch is transactional, so partial source/tag imports cannot leak.
     const results = statements.length ? await this.db.batch(statements) : [];
     return { added: results.slice(0, inserts.length).reduce((sum, item) => sum + item.meta.changes, 0), ids };

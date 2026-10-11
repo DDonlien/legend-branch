@@ -25,4 +25,5 @@ const database: Database = {
   },
 };
 await new KnowledgeStore(database).merge(seed, "2026-10-10T00:00:00.000Z");
-await writeFile(new URL("../server/migrations/0002_seed.sql", import.meta.url), migration + "\n");
+// Export for review; never rewrite an already-applied database migration.
+await writeFile(new URL("../output/generated-seed.sql", import.meta.url), migration + "\n");

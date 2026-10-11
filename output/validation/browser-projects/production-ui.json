@@ -1,0 +1,28 @@
+{
+  "edges": 13,
+  "groups": [
+    "印度文化圈",
+    "中国文化圈",
+    "日本现代传播",
+    "中国现代传播",
+    "澳大利亚",
+    "法国",
+    "加拿大"
+  ],
+  "nodes": 16,
+  "relations": [
+    "arrow_forward",
+    "小王子 · 1974",
+    "arrow_forward",
+    "小王子 · 2015",
+    "arrow_forward",
+    "小王子 · 年代待核实"
+  ],
+  "scripts": [
+    "/assets/index-BKjNJc4g.js"
+  ],
+  "tracedEdges": [
+    "wd:P144:Q25338:Q1199280",
+    "wd:P144:Q25338:Q16386722"
+  ]
+}

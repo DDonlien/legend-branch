@@ -1,4 +1,4 @@
-import { edges, nodes } from "../src/data";
+import { edges, nodes, regions } from "../src/data";
 import type { Discovery } from "./model";
 
 // Only exact matching entities are bound. A literary version or character
@@ -9,6 +9,10 @@ const externalIds: Record<string, string> = {
 };
 
 export const seed: Discovery = {
-  entries: nodes.map((node) => ({ ...node, reviewStatus: "curated", externalId: externalIds[node.id], aliases: [node.name, node.latinName ?? ""] })),
+  entries: nodes.map((node) => ({ ...node, reviewStatus: "curated", externalId: externalIds[node.id], aliases: [node.name, node.latinName ?? ""],
+    tags: [...node.tags.map((tag) => ({ ...tag, category: tag.id.startsWith("wd:") ? "country" as const : "topic" as const })),
+      { id: `culture:${node.region}`, name: regions.find((region) => region.id === node.region)!.label, category: "culture" as const }],
+    placement: { year: node.year, sourceUrl: node.sources[0].url, quality: "curated", preferredGroup: `culture:${node.region}`, rowHint: node.row, defaultTrace: node.isTrace },
+  })),
   relationships: edges.map((edge) => ({ ...edge, debated: edge.debated ?? false, reviewStatus: "curated", sources: [edge.source] })),
 };

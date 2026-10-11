@@ -1,8 +1,8 @@
-import { nodes } from "../data";
+import type { LegendNode } from "../types";
 
-type CanvasFooterProps = { traceActive: boolean };
+type CanvasFooterProps = { traceActive: boolean; nodes: LegendNode[]; pendingCount: number; message: string };
 
-export function CanvasFooter({ traceActive }: CanvasFooterProps) {
+export function CanvasFooter({ traceActive, nodes, pendingCount, message }: CanvasFooterProps) {
   const visibleCount = traceActive ? nodes.filter((node) => node.isTrace).length : nodes.length;
   return (
     <footer className="canvas-footer md-typescale-label-medium">
@@ -17,8 +17,9 @@ export function CanvasFooter({ traceActive }: CanvasFooterProps) {
       <span className="axis-note">非等距时间轴 · 现代段展开</span>
       <div className="footer-status" role="status">
         <span className={traceActive ? "active-dot" : "idle-dot"} />
-        {traceActive ? "当前追踪" : "当前显示"}：{visibleCount} 个节点
+        {traceActive ? "当前追踪" : "当前显示"}：{visibleCount} 个节点{pendingCount ? ` · ${pendingCount} 个待定位` : ""}
       </div>
+      {message ? <span className="graph-message" role="status">{message}</span> : null}
     </footer>
   );
 }

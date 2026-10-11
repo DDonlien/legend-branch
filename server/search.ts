@@ -6,7 +6,7 @@ export async function enrichSearch(store: KnowledgeStore, query: string, discove
   const cached = await store.recentSearch(query);
   const previousIds: string[] = cached ? JSON.parse(cached.entry_ids) : [];
   const age = cached ? now.getTime() - Date.parse(cached.completed_at) : Infinity;
-  if (cached && cached.status !== "failed" && age >= 0 && age < 6 * 60 * 60 * 1000) {
+  if (cached?.data_version === 2 && cached.status !== "failed" && age >= 0 && age < 6 * 60 * 60 * 1000) {
     return { query, entries: await store.search(query, previousIds), enrichment: "cached", added: 0 };
   }
   if (cached?.status === "failed" && age >= 0 && age < 60000) {

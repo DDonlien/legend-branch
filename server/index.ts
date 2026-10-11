@@ -16,6 +16,11 @@ async function api(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   const store = new KnowledgeStore(env.DB);
   if (url.pathname === "/api/health") return json({ ok: true });
+  if (url.pathname === "/api/graph" && request.method === "GET") {
+    const cursor = url.searchParams.get("cursor") ?? "";
+    if (cursor.length > 100) return json({ message: "图谱游标无效。" }, 400);
+    return json(await store.graph(cursor));
+  }
   if (url.pathname.startsWith("/api/entries/") && request.method === "GET") {
     const id = decodeURIComponent(url.pathname.slice("/api/entries/".length));
     if (!id || id.length > 100) return json({ message: "条目标识无效。" }, 400);

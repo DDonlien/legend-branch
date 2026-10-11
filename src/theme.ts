@@ -52,3 +52,10 @@ export function applyMaterialTheme(element: HTMLElement) {
 export const graphTrackColors = Object.fromEntries(Object.entries({
   india: "#be9c58", china: "#8b80f9", japan: "#4eaaa0", "modern-china": "#d783a8",
 }).map(([region, seed]) => [region, new SchemeTonalSpot(Hct.fromInt(argbFromHex(seed)), true, 0, "2025").primary]));
+
+export function trackColor(id: string) {
+  const known = graphTrackColors[id.replace(/^culture:/, "")];
+  if (known) return hexFromArgb(known);
+  const hue = [...id].reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) % 360, 0);
+  return hexFromArgb(Hct.from(hue, 28, 78).toInt());
+}

@@ -1,0 +1,26 @@
+{
+  "workerVersion": "a2bb3b4c-125f-419b-bbea-a42476c558f0",
+  "entries": 20,
+  "relationships": 14,
+  "graphNodes": 16,
+  "graphEdges": 13,
+  "pending": 4,
+  "traced": [
+    {
+      "name": "小王子",
+      "year": 1974
+    },
+    {
+      "name": "小王子",
+      "year": 1943
+    },
+    {
+      "name": "小王子",
+      "year": 2015
+    }
+  ],
+  "tracedRelations": [
+    "wd:P144:Q25338:Q1199280",
+    "wd:P144:Q25338:Q16386722"
+  ]
+}

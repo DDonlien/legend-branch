@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { edges, nodes } from "../data";
-import { CANVAS_HEIGHT, CANVAS_WIDTH, CARD_HEIGHT, CARD_WIDTH, edgeToRoute, LABEL_WIDTH, nodeById, nodeToPoint, regionLayouts, timelineTicks } from "../layout";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { CARD_HEIGHT, CARD_WIDTH, edgeToRoute, LABEL_WIDTH, nodeToPoint, type GraphLayout } from "../layout";
+import { trackColor } from "../theme";
 import type { LegendNode } from "../types";
 import { MaterialCard } from "./Material";
 
@@ -8,10 +8,11 @@ type LegendCanvasProps = {
   traceActive: boolean;
   selectedId: string | null;
   onSelectNode: (id: string) => void;
+  layout: GraphLayout;
+  traceRoot: string;
 };
 
-const graphEdges = edges.map((edge) => ({ edge, ...edgeToRoute(edge) }));
-const kindLabel = { origin: "神话 / 民俗", literature: "古典文学", modern: "现代作品" };
+const kindLabel = { origin: "神话 / 民俗", literature: "古典文学", modern: "现代作品", entry: "知识条目" };
 
 function NodeShape({ node }: { node: LegendNode }) {
   if (node.kind === "literature") return <rect className="node-shape" x="-6" y="-6" width="12" height="12" rx="1" transform="rotate(45)" />;
@@ -19,25 +20,30 @@ function NodeShape({ node }: { node: LegendNode }) {
   return <circle className="node-shape" r="6" />;
 }
 
-export function LegendCanvas({ traceActive, selectedId, onSelectNode }: LegendCanvasProps) {
+export function LegendCanvas({ traceActive, selectedId, onSelectNode, layout, traceRoot }: LegendCanvasProps) {
+  const { nodes, edges, nodeById, regionLayouts, timelineTicks, width: CANVAS_WIDTH, height: CANVAS_HEIGHT } = layout;
+  const graphEdges = useMemo(() => layout.edges.map((edge) => ({ edge, ...edgeToRoute(edge, layout) })), [layout]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const initialized = useRef(false);
   const [scroll, setScroll] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const container = scrollRef.current;
-    const focus = nodeById.get("sun-wukong");
+    const focus = nodeById.get(traceRoot) ?? nodes[0];
     if (!container || !focus) return;
-    const point = nodeToPoint(focus);
+    if (initialized.current) return;
+    initialized.current = true;
+    const point = nodeToPoint(focus, layout);
     container.scrollLeft = Math.max(0, point.x - container.clientWidth * 0.5);
     container.scrollTop = Math.max(0, point.y - container.clientHeight * 0.38);
     setScroll({ x: container.scrollLeft, y: container.scrollTop });
-  }, []);
+  }, [layout, nodeById, nodes, traceRoot]);
 
   useEffect(() => {
     const container = scrollRef.current;
     const selected = selectedId ? nodeById.get(selectedId) : null;
     if (!container || !selected) return;
-    const point = nodeToPoint(selected);
+    const point = nodeToPoint(selected, layout);
     const leftInset = LABEL_WIDTH + 24;
     const rightInset = Math.min(384, container.clientWidth * 0.4);
     if (point.x < container.scrollLeft + leftInset) container.scrollLeft = Math.max(0, point.x - leftInset);
@@ -49,15 +55,15 @@ export function LegendCanvas({ traceActive, selectedId, onSelectNode }: LegendCa
       container.scrollTop = point.y + CARD_HEIGHT / 2 - container.clientHeight + 24;
     }
     setScroll({ x: container.scrollLeft, y: container.scrollTop });
-  }, [selectedId]);
+  }, [selectedId, layout, nodeById]);
 
   return (
     <>
       <div className="culture-rail" aria-hidden="true">
-        <div className="culture-rail-heading md-typescale-label-medium">文化 / 地区<span>时间 →</span></div>
+        <div className="culture-rail-heading md-typescale-label-medium">标签分组<span>时间 →</span></div>
         <div className="culture-rail-tracks" style={{ transform: `translateY(${-scroll.y}px)` }}>
           {regionLayouts.map((region) => (
-            <div className={`culture-rail-item region-${region.id}`} key={region.id} style={{ top: region.y, height: region.height }}>
+            <div className="culture-rail-item" key={region.id} style={{ top: region.y, height: region.height, "--track-color": trackColor(region.id) } as CSSProperties}>
               <span className="culture-marker" />
               <strong className="md-typescale-title-medium">{region.label}</strong>
               <small className="md-typescale-label-small">{region.subtitle}</small>
@@ -74,9 +80,9 @@ export function LegendCanvas({ traceActive, selectedId, onSelectNode }: LegendCa
         </svg>
       </div>
       <div className="canvas-scroll" ref={scrollRef} onScroll={(event) => setScroll({ x: event.currentTarget.scrollLeft, y: event.currentTarget.scrollTop })}>
-        <svg className="legend-canvas" viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} role="group" aria-label="孙悟空传说演化时间图谱，横向为非等距时间，纵向为文化与角色行">
+        <svg className="legend-canvas" viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} role="group" aria-label="时间图谱，横向为非等距时间，纵向为标签分组与角色行">
           <g className="region-layer" aria-hidden="true">
-            {regionLayouts.map((region) => <g className={`region region-${region.id}`} key={region.id}>
+            {regionLayouts.map((region) => <g className="region" key={region.id} style={{ "--track-color": trackColor(region.id) } as CSSProperties}>
               <rect x="0" y={region.y} width={CANVAS_WIDTH} height={region.height} />
               <line x1="0" y1={region.y + region.height} x2={CANVAS_WIDTH} y2={region.y + region.height} />
             </g>)}
@@ -90,16 +96,18 @@ export function LegendCanvas({ traceActive, selectedId, onSelectNode }: LegendCa
               key={edge.id} data-edge-id={edge.id}
               className={`edge track-${track} edge-${edge.confidence} ${edge.isTrace && traceActive ? "is-traced" : ""} ${traceActive && !edge.isTrace ? "is-muted" : ""}`}
               d={path}
+              style={{ "--track-color": trackColor(track) } as CSSProperties}
             ><title>{`${nodeById.get(edge.from)?.name} → ${nodeById.get(edge.to)?.name} · ${edge.relation} · ${edge.confidence}${edge.debated ? " · 存在争议" : ""}`}</title></path>)}
           </g>
           <g className="node-layer">
             {nodes.map((node) => {
-              const point = nodeToPoint(node);
+              const point = nodeToPoint(node, layout);
               const incoming = edges.some((edge) => edge.to === node.id);
               const outgoing = edges.some((edge) => edge.from === node.id);
               return <g
                 className={`node track-${node.region} node-${node.kind} ${node.isTrace && traceActive ? "is-traced" : ""} ${traceActive && !node.isTrace ? "is-muted" : ""} ${selectedId === node.id ? "is-selected" : ""}`}
                 key={node.id} data-node-id={node.id} transform={`translate(${point.x}, ${point.y})`}
+                style={{ "--track-color": trackColor(node.region) } as CSSProperties}
               >
                 <g transform="translate(-12, 0)" aria-hidden="true">
                   {selectedId === node.id ? <circle className="node-selection-ring" r="12" /> : null}
@@ -110,7 +118,7 @@ export function LegendCanvas({ traceActive, selectedId, onSelectNode }: LegendCa
                 <foreignObject x="0" y={-CARD_HEIGHT / 2} width={CARD_WIDTH} height={CARD_HEIGHT}>
                   <MaterialCard color="filled" interactive className="graph-card" aria-label={`查看节点：${node.name}`} title={`${node.name} · ${node.yearLabel}`} onClick={() => onSelectNode(node.id)}>
                     <div className="graph-card-content">
-                      <span className="card-kind md-typescale-label-small">{kindLabel[node.kind]}{node.id === "sun-wukong" && traceActive ? <span className="card-trace-label">Trace 中心</span> : null}</span>
+                      <span className="card-kind md-typescale-label-small">{node.origin === "project" ? "故事节点" : kindLabel[node.kind]}{node.id === traceRoot && traceActive ? <span className="card-trace-label">Trace 中心</span> : null}</span>
                       <strong className="card-title md-typescale-title-small">{node.name}</strong>
                       <span className="card-year md-typescale-body-small">{node.yearLabel}<span>{incoming ? "←" : "起源"}{outgoing ? " →" : ""}</span></span>
                     </div>

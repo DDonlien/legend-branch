@@ -1,4 +1,5 @@
 import type { KnowledgeEntry, SearchResponse } from "../knowledge";
+import { eligibleForGraph } from "../graph";
 import { MaterialCard, MaterialIcon, MaterialIconButton, MaterialLinearProgress, MaterialList, MaterialListItem } from "./Material";
 
 export function SearchResults({ result, loading, onSelect, onClose }: {
@@ -22,7 +23,7 @@ export function SearchResults({ result, loading, onSelect, onClose }: {
               <span>{entry.name}</span>
               <div slot="supporting-text" className="search-supporting">
                 <span>{entry.summary}</span>
-                <small>{entry.tags.map((tag) => tag.name).join(" · ") || "暂无标签"} · {entry.reviewStatus === "curated" ? "已整理" : "待复核"}</small>
+                <small>{entry.tags.map((tag) => tag.name).join(" · ") || "暂无标签"} · {entry.origin ? "项目内容" : entry.reviewStatus === "curated" ? "已整理" : "待复核"} · {eligibleForGraph(entry) ? "已可定位" : "待定位"}</small>
               </div>
               <MaterialIcon slot="trailing" name="chevron_right" />
             </MaterialListItem>)}

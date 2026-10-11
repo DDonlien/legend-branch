@@ -9,9 +9,15 @@ type ToolbarProps = {
   onSearch: (query: string) => void;
   query: string;
   onQueryChange: (query: string) => void;
+  traceName: string;
+  projectName?: string;
+  onProjects: () => void;
+  onGroups: () => void;
+  onAddNode: () => void;
+  onAddRelation: () => void;
 };
 
-export function Toolbar({ traceActive, toolbarVisible, onToggleTrace, onToggleToolbar, onSearch, query, onQueryChange }: ToolbarProps) {
+export function Toolbar({ traceActive, toolbarVisible, onToggleTrace, onToggleToolbar, onSearch, query, onQueryChange, traceName, projectName, onProjects, onGroups, onAddNode, onAddRelation }: ToolbarProps) {
   const composing = useRef(false);
   const submitSearch = () => { if (query.trim().length >= 2 && query.trim().length <= 120) onSearch(query); };
   if (!toolbarVisible) {
@@ -32,17 +38,22 @@ export function Toolbar({ traceActive, toolbarVisible, onToggleTrace, onToggleTo
       <MaterialCard color="filled" className={`trace-status ${traceActive ? "is-active" : ""}`}>
         <div className="trace-status-content" role="status">
           <MaterialIcon name={traceActive ? "conversion_path" : "hub"} />
-          <span className="md-typescale-label-large">{traceActive ? "TRACE MODE · 孙悟空" : "全部谱系"}</span>
+          <span className="md-typescale-label-large">{traceActive ? `TRACE MODE · ${traceName}` : projectName ?? "全部谱系"}</span>
         </div>
       </MaterialCard>
       <div className="toolbar-actions">
         <MaterialButton color={traceActive ? "tonal" : "filled"} size="sm" type="button" onClick={onToggleTrace}>
           <MaterialIcon name={traceActive ? "close" : "conversion_path"} />
-          {traceActive ? "清除 Trace" : "Trace 孙悟空"}
+          {traceActive ? "清除 Trace" : `Trace ${traceName}`}
         </MaterialButton>
-        <MaterialButton color="outlined" size="sm" type="button" aria-label="筛选功能将在后续阶段开放" title="筛选功能将在后续阶段开放" disabled>
-          <MaterialIcon name="filter_list" />筛选
+        <MaterialButton color="outlined" size="sm" type="button" onClick={onProjects} title={projectName ?? "共享知识库"} aria-label="切换知识库或个人项目">
+          <MaterialIcon name={projectName ? "folder" : "public"} />{projectName ? "个人项目" : "知识库"}
         </MaterialButton>
+        <MaterialButton color="outlined" size="sm" type="button" onClick={onGroups}><MaterialIcon name="filter_list" />分组</MaterialButton>
+        {projectName ? <>
+          <MaterialIconButton size="sm" aria-label="添加故事节点" title="添加故事节点" onClick={onAddNode}><MaterialIcon name="add" /></MaterialIconButton>
+          <MaterialIconButton size="sm" aria-label="添加发展关系" title="添加发展关系" onClick={onAddRelation}><MaterialIcon name="add_link" /></MaterialIconButton>
+        </> : null}
         <MaterialTextField className="material-search-bar" type="search" aria-label="搜索条目或标签" placeholder="搜索条目或标签" value={query} error={query.trim().length > 120} errorText="搜索词最多 120 个字"
           onInput={(event) => onQueryChange((event.target as HTMLInputElement).value)}
           onCompositionStart={() => { composing.current = true; }} onCompositionEnd={() => { composing.current = false; }}

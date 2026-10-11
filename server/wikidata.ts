@@ -1,4 +1,4 @@
-import type { KnowledgeTag } from "../src/knowledge";
+import type { KnowledgePlacement, KnowledgeTag } from "../src/knowledge";
 import type { Discovery, IncomingEntry, IncomingRelation } from "./model";
 
 type Localized = Record<string, { value: string; language?: string }>;
@@ -25,17 +25,24 @@ function targets(entity: Entity, property: string): string[] {
     return id && /^Q\d+$/.test(id) ? [id] : [];
   });
 }
-function yearLabel(entity: Entity): string | undefined {
+function placement(entity: Entity): KnowledgePlacement | undefined {
   const year = (property: string) => {
     const date = (entity.claims?.[property] ?? []).find((c) => c.rank !== "deprecated" && c.mainsnak?.datavalue?.value?.time)?.mainsnak?.datavalue?.value;
     if (!date?.time || (date.precision ?? 0) < 9) return undefined;
     const match = /^([+-])(\d+)-/.exec(date.time);
     if (!match) return undefined;
-    return `${match[1] === "-" ? "公元前 " : ""}${Number(match[2])}`;
+    const value = (match[1] === "-" ? -1 : 1) * Number(match[2]);
+    return Number.isSafeInteger(value) && Math.abs(value) <= 1000000 ? value : undefined;
   };
-  const start = year("P580") ?? year("P577");
+  const start = year("P580") ?? year("P577") ?? year("P571");
   const end = year("P582");
-  return start ? `${start}${end ? `–${end}` : ""}` : undefined;
+  return start !== undefined ? { year: start, endYear: end !== undefined && end >= start ? end : undefined,
+    sourceUrl: `https://www.wikidata.org/wiki/${entity.id}`, quality: "sourced" } : undefined;
+}
+
+function yearLabel(value?: KnowledgePlacement): string | undefined {
+  const label = (year: number) => year < 0 ? `公元前 ${Math.abs(year)}` : String(year);
+  return value ? `${label(value.year)}${value.endYear !== undefined ? `–${label(value.endYear)}` : ""}` : undefined;
 }
 
 async function request(params: Record<string, string>, fetcher: typeof fetch): Promise<Record<string, unknown>> {
@@ -84,13 +91,13 @@ export async function discover(query: string, fetcher: typeof fetch = fetch): Pr
     const url = `https://www.wikidata.org/wiki/${e.id}`;
     const tags: KnowledgeTag[] = [...new Set(tagProperties.flatMap((p) => targets(e, p).slice(0, 4)))].flatMap((id) => {
       const name = labels.get(id);
-      return name ? [{ id: `wd:${id}`, name }] : [];
+      return name ? [{ id: `wd:${id}`, name, category: ["P17", "P495"].some((p) => targets(e, p).includes(id)) ? "country" as const : "topic" as const }] : [];
     });
     const wiki = e.sitelinks?.zhwiki ?? e.sitelinks?.enwiki;
     const wikiLanguage = e.sitelinks?.zhwiki ? "zh" : "en";
     return {
       id: `wd:${e.id}`, externalId: e.id, name: localized(e.labels)!,
-      latinName: e.labels?.en?.value, kind: "entry", yearLabel: yearLabel(e),
+      latinName: e.labels?.en?.value, kind: "entry", placement: placement(e), yearLabel: yearLabel(placement(e)),
       summary: localized(e.descriptions) ?? "",
       reviewStatus: "unreviewed", tags,
       sources: [{ label: `Wikidata · ${e.id}`, url }, ...(wiki ? [{ label: "Wikipedia · 外链索引", url: `https://${wikiLanguage}.wikipedia.org/wiki/${encodeURIComponent(wiki.title.replace(/ /g, "_"))}` }] : [])],

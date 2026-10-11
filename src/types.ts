@@ -1,6 +1,6 @@
-export type NodeKind = "origin" | "literature" | "modern";
+export type NodeKind = "origin" | "literature" | "modern" | "entry";
 export type Confidence = "confirmed" | "probable" | "speculative";
-export type RegionId = "india" | "china" | "japan" | "modern-china";
+export type RegionId = string;
 
 export type LegendLink = {
   label: string;
@@ -20,6 +20,7 @@ export type LegendNode = {
   sources: LegendLink[];
   tags: { id: string; name: string }[];
   isTrace: boolean;
+  origin?: "baseline" | "project";
 };
 
 export type LegendEdge = {

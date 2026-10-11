@@ -12,6 +12,7 @@ function setup() {
   const sqlite = new DatabaseSync(":memory:");
   sqlite.exec("PRAGMA foreign_keys = ON");
   sqlite.exec(readFileSync(new URL("../server/migrations/0001_knowledge.sql", import.meta.url), "utf8"));
+  sqlite.exec(readFileSync(new URL("../server/migrations/0003_graph.sql", import.meta.url), "utf8"));
   class SqlStatement implements Statement {
     constructor(readonly sql: string, readonly values: (string | number | null)[] = []) {}
     bind(...values: (string | number | null)[]) { return new SqlStatement(this.sql, values); }
@@ -51,6 +52,7 @@ test("seed migration and repeated imports preserve all 12 entries and 11 sourced
   const wukong = await store.detail("sun-wukong");
   assert.equal(wukong?.relationships.length, 9);
   assert.equal(wukong?.relationships.find((r) => r.from === "wuzhiqi")?.confidence, "speculative");
+  assert.equal(wukong?.relationships.find((r) => r.target.id === "black-myth")?.target.yearLabel, "2024 · 游戏");
   assert.ok(wukong?.relationships.every((r) => r.sources.length));
   assert.notEqual((await store.detail("monkey-pilgrim"))?.entry.id, (await store.detail("zaju"))?.entry.id);
 });
@@ -92,10 +94,82 @@ test("concurrent repeated searches count an entity only once", async () => {
 
 test("failed batches roll back entries as well as sources and tags", async () => {
   const { store, sqlite } = setup();
+  const initialTagCount = sqlite.prepare("SELECT count(*) AS n FROM tags").get()?.n;
   const bad: Discovery = { ...discovery(), relationships: [{ id: "bad", from: "missing", to: incoming().id, relation: "影响", confidence: "probable", debated: false, reviewStatus: "unreviewed", sources: incoming().sources }] };
   await assert.rejects(store.merge(bad, now));
   assert.equal(sqlite.prepare("SELECT count(*) AS n FROM entries").get()?.n, 0);
-  assert.equal(sqlite.prepare("SELECT count(*) AS n FROM tags").get()?.n, 0);
+  assert.equal(sqlite.prepare("SELECT count(*) AS n FROM tags").get()?.n, initialTagCount);
+});
+
+test("graph migration preserves curated chronology, grouping and original trace hints", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  sqlite.exec("PRAGMA foreign_keys = ON");
+  for (const name of ["0001_knowledge.sql", "0002_seed.sql", "0003_graph.sql"]) sqlite.exec(readFileSync(new URL(`../server/migrations/${name}`, import.meta.url), "utf8"));
+  assert.equal(sqlite.prepare("SELECT count(*) AS n FROM entry_placements").get()?.n, 12);
+  assert.deepEqual({ ...sqlite.prepare("SELECT year, preferred_group, row_hint, default_trace FROM entry_placements WHERE entry_id = 'sun-wukong'").get() },
+    { year: 1592, preferred_group: "culture:china", row_hint: 2, default_trace: 1 });
+  assert.equal(sqlite.prepare("SELECT count(*) AS n FROM entry_placements WHERE default_trace = 1").get()?.n, 8);
+  assert.equal(sqlite.prepare("SELECT count(*) AS n FROM relationships").get()?.n, 11);
+});
+
+test("graph endpoint pages every entry and retains cross-page source-backed relationships", async () => {
+  const { store } = setup();
+  const entries = Array.from({ length: 215 }, (_, index) => incoming({ id: `entry:${String(index).padStart(4, "0")}`, externalId: undefined }));
+  await store.merge({ entries, relationships: [{ id: "cross-page", from: entries[199].id, to: entries[214].id, relation: "影响", confidence: "probable", debated: false, reviewStatus: "unreviewed", sources: incoming().sources }] }, now);
+  const first = await store.graph();
+  const second = await store.graph(first.nextCursor!);
+  assert.equal(first.entries.length, 200);
+  assert.equal(second.entries.length, 15);
+  assert.equal(second.nextCursor, null);
+  assert.equal(new Set([...first.entries, ...second.entries].map((entry) => entry.id)).size, 215);
+  assert.equal([...first.relationships, ...second.relationships].length, 1);
+  assert.ok(first.relationships[0].sources.length);
+});
+
+test("structured dates merge while curated dates and group positions remain protected", async () => {
+  const { store } = setup();
+  await store.merge(seed, now);
+  const sourceUrl = incoming().sources[0].url;
+  await store.merge(discovery(incoming({ placement: { year: 1929, endYear: 1939, quality: "sourced", sourceUrl }, tags: [{ id: "wd:Q30", name: "美国", category: "country" }] })), now);
+  const entry = (await store.detail(incoming().id))!.entry;
+  assert.equal(entry.placement?.year, 1929);
+  assert.equal(entry.placement?.endYear, 1939);
+  assert.equal(entry.tags.find((tag) => tag.id === "wd:Q30")?.category, "country");
+  await store.merge(discovery(incoming({ externalId: "Q98582386", id: "wd:Q98582386", placement: { year: 1, quality: "sourced", sourceUrl } })), now);
+  assert.equal((await store.detail("black-myth"))?.entry.placement?.year, 2024);
+});
+
+test("old search cache is refreshed once to acquire structured graph information", async () => {
+  const { store, sqlite } = setup();
+  sqlite.prepare("INSERT INTO search_runs(query, display_query, completed_at, status, entry_ids) VALUES (?, ?, ?, 'success', '[]')").run("美国大萧条", "美国大萧条", now);
+  let calls = 0;
+  const provider = async () => { calls++; return discovery(); };
+  await enrichSearch(store, "美国大萧条", provider, new Date(now));
+  await enrichSearch(store, "美国大萧条", provider, new Date(now));
+  assert.equal(calls, 1);
+});
+
+test("Wikidata stores explicit year precision and country information, omitting vague dates", async () => {
+  const fixtures = {
+    Q1: { id: "Q1", labels: { zh: { value: "事件" } }, claims: {
+      P580: [{ mainsnak: { datavalue: { value: { time: "+1929-01-01T00:00:00Z", precision: 9 } } } }],
+      P582: [{ mainsnak: { datavalue: { value: { time: "+1939-01-01T00:00:00Z", precision: 9 } } } }],
+      P17: [{ mainsnak: { snaktype: "value", datavalue: { value: { id: "Q30" } } } }],
+    } },
+    Q2: { id: "Q2", labels: { zh: { value: "年代不明" } }, claims: { P580: [{ mainsnak: { datavalue: { value: { time: "+1900-01-01T00:00:00Z", precision: 7 } } } }] } },
+    Q30: { id: "Q30", labels: { zh: { value: "美国" } } },
+  };
+  const fetcher = (async (input: RequestInfo | URL) => {
+    const url = new URL(String(input));
+    if (url.searchParams.get("action") === "wbsearchentities") return Response.json({ search: [{ id: "Q1" }, { id: "Q2" }] });
+    return Response.json({ entities: Object.fromEntries(url.searchParams.get("ids")!.split("|").map((id) => [id, fixtures[id as keyof typeof fixtures]])) });
+  }) as typeof fetch;
+  const found = await discover("事件", fetcher);
+  assert.equal(found.entries[0].placement?.year, 1929);
+  assert.equal(found.entries[0].placement?.endYear, 1939);
+  assert.equal(found.entries[0].placement?.sourceUrl, "https://www.wikidata.org/wiki/Q1");
+  assert.equal(found.entries[0].tags[0].category, "country");
+  assert.equal(found.entries[1].placement, undefined);
 });
 
 test("repeat queries reuse enrichment for six hours and then fetch updates", async () => {

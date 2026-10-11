@@ -1,5 +1,5 @@
 import { edges, nodes, regions } from "./data";
-import type { LegendEdge, LegendNode } from "./types";
+import type { LegendEdge, LegendNode, Region } from "./types";
 
 export const LABEL_WIDTH = 170;
 export const CARD_WIDTH = 224;
@@ -22,24 +22,38 @@ export const timelineTicks = [
   { year: 2050, label: "2050", x: 3000 },
 ];
 
-export function yearToX(year: number) {
-  const found = timelineTicks.findIndex((tick) => tick.year >= year);
-  const index = found < 0 ? timelineTicks.length - 2 : Math.max(0, found - 1);
-  const start = timelineTicks[index];
-  const end = timelineTicks[index + 1];
+export function yearToX(year: number, ticks = timelineTicks) {
+  const found = ticks.findIndex((tick) => tick.year >= year);
+  const index = found < 0 ? ticks.length - 2 : Math.max(0, found - 1);
+  const start = ticks[index];
+  const end = ticks[index + 1];
   return start.x + ((year - start.year) / (end.year - start.year)) * (end.x - start.x);
 }
 
-let regionY = TIMELINE_HEIGHT;
-export const regionLayouts = regions.map((region) => {
-  const rows = Math.max(0, ...nodes.filter((node) => node.region === region.id).map((node) => node.row)) + 1;
-  const layout = { ...region, y: regionY, height: rows * ROW_HEIGHT + 16, rows };
-  regionY += layout.height;
-  return layout;
-});
-export const CANVAS_WIDTH = 3280;
-export const CANVAS_HEIGHT = regionY;
-export const nodeById = new Map(nodes.map((node) => [node.id, node]));
+export function createLayout(data: { nodes: LegendNode[]; edges: LegendEdge[]; regions: Region[] }) {
+  let y = TIMELINE_HEIGHT;
+  const regionLayouts = data.regions.map((region) => {
+    const rows = Math.max(0, ...data.nodes.filter((node) => node.region === region.id).map((node) => node.row)) + 1;
+    const layout = { ...region, y, height: rows * ROW_HEIGHT + 16, rows };
+    y += layout.height;
+    return layout;
+  });
+  let ticks = timelineTicks.map((tick) => ({ ...tick }));
+  const min = Math.min(-500, ...data.nodes.map((node) => node.year));
+  const max = Math.max(2050, ...data.nodes.map((node) => node.year));
+  const label = (year: number) => year < 0 ? `公元前 ${Math.abs(year)}` : String(year);
+  if (min < -500) ticks = [{ year: Math.floor(min / 500) * 500, label: label(Math.floor(min / 500) * 500), x: 240 }, ...ticks.map((tick) => ({ ...tick, x: tick.x + 440 }))];
+  if (max > 2050) ticks.push({ year: Math.ceil(max / 50) * 50, label: label(Math.ceil(max / 50) * 50), x: ticks.at(-1)!.x + 600 });
+  const cardEnd = Math.max(0, ...data.nodes.map((node) => yearToX(node.year, ticks) + CARD_WIDTH));
+  // Allow the final dated card to scroll clear of the non-modal detail panel.
+  return { ...data, regionLayouts, timelineTicks: ticks, width: Math.max(3280, ticks.at(-1)!.x + 280, cardEnd + 440), height: Math.max(y, TIMELINE_HEIGHT + 192), nodeById: new Map(data.nodes.map((node) => [node.id, node])) };
+}
+export type GraphLayout = ReturnType<typeof createLayout>;
+const originalLayout = createLayout({ nodes, edges, regions });
+export const regionLayouts = originalLayout.regionLayouts;
+export const CANVAS_WIDTH = originalLayout.width;
+export const CANVAS_HEIGHT = originalLayout.height;
+export const nodeById = originalLayout.nodeById;
 
 export type Point = { x: number; y: number };
 export type Rect = Point & { width: number; height: number };
@@ -47,14 +61,14 @@ export type RouteSegment =
   | { kind: "line"; start: Point; end: Point }
   | { kind: "curve"; start: Point; control1: Point; control2: Point; end: Point };
 
-export function nodeToPoint(node: LegendNode): Point {
-  const region = regionLayouts.find((item) => item.id === node.region);
+export function nodeToPoint(node: LegendNode, layout = originalLayout): Point {
+  const region = layout.regionLayouts.find((item) => item.id === node.region);
   if (!region) throw new Error(`Unknown region: ${node.region}`);
-  return { x: yearToX(node.year), y: region.y + 8 + CARD_HEIGHT / 2 + node.row * ROW_HEIGHT };
+  return { x: yearToX(node.year, layout.timelineTicks), y: region.y + 8 + CARD_HEIGHT / 2 + node.row * ROW_HEIGHT };
 }
 
-export function nodeToRect(node: LegendNode): Rect {
-  const point = nodeToPoint(node);
+export function nodeToRect(node: LegendNode, layout = originalLayout): Rect {
+  const point = nodeToPoint(node, layout);
   return { x: point.x, y: point.y - CARD_HEIGHT / 2, width: CARD_WIDTH, height: CARD_HEIGHT };
 }
 
@@ -183,7 +197,7 @@ function bevelRoute(points: Point[], obstacles: Rect[]) {
   return simplifyPoints([...result, clean[clean.length - 1]]);
 }
 
-function routeAroundCards(start: Point, end: Point, obstacles: Rect[], preferredX: number): Point[] {
+function routeAroundCards(start: Point, end: Point, obstacles: Rect[], preferredX: number, layout: GraphLayout): Point[] {
   const direct = simplifyPoints([start, { x: preferredX, y: start.y }, { x: preferredX, y: end.y }, end]);
   const clear = (a: Point, b: Point) => !obstacles.some((rect) => segmentIntersectsRect(a, b, rect));
   if (direct.every((point, index) => index === 0 || clear(direct[index - 1], point))) return direct;
@@ -206,10 +220,10 @@ function routeAroundCards(start: Point, end: Point, obstacles: Rect[], preferred
   }
   // Include narrow gap centerlines: outer-card offsets miss the 8px channel
   // between adjacent rows, causing needlessly long loops around both cards.
-  const xs = [...new Set([start.x, end.x, preferredX, LABEL_WIDTH + 16, CANVAS_WIDTH - 16,
+  const xs = [...new Set([start.x, end.x, preferredX, LABEL_WIDTH + 16, layout.width - 16,
     ...gapXs,
     ...obstacles.flatMap((rect) => [rect.x - 8, rect.x + rect.width + 8])])].sort((a, b) => a - b);
-  const ys = [...new Set([start.y, end.y, TIMELINE_HEIGHT + 4, CANVAS_HEIGHT - 4,
+  const ys = [...new Set([start.y, end.y, TIMELINE_HEIGHT + 4, layout.height - 4,
     ...gapYs,
     ...obstacles.flatMap((rect) => [rect.y - 8, rect.y + rect.height + 8])])].sort((a, b) => a - b);
   const pointAt = (index: number) => ({ x: xs[index % xs.length], y: ys[Math.floor(index / xs.length)] });
@@ -256,29 +270,29 @@ function routeAroundCards(start: Point, end: Point, obstacles: Rect[], preferred
   throw new Error("No unobstructed route between graph cards");
 }
 
-export function edgeToRoute(edge: LegendEdge) {
-  const from = nodeById.get(edge.from);
-  const to = nodeById.get(edge.to);
+export function edgeToRoute(edge: LegendEdge, layout = originalLayout) {
+  const from = layout.nodeById.get(edge.from);
+  const to = layout.nodeById.get(edge.to);
   if (!from || !to) throw new Error(`Unknown endpoints for edge: ${edge.id}`);
-  const source = nodeToPoint(from);
-  const target = nodeToPoint(to);
+  const source = nodeToPoint(from, layout);
+  const target = nodeToPoint(to, layout);
   const start = { x: source.x + CARD_WIDTH + 12, y: source.y };
   const end = { x: target.x - 12, y: target.y };
   // Fan out to farther rows first so diagonal tracks never cross the nearer
   // branches after they turn horizontal.
-  const siblings = edges.filter((item) => item.from === edge.from).sort((a, b) =>
-    Math.abs(nodeToPoint(nodeById.get(b.to)!).y - source.y) - Math.abs(nodeToPoint(nodeById.get(a.to)!).y - source.y));
+  const siblings = layout.edges.filter((item) => item.from === edge.from).sort((a, b) =>
+    Math.abs(nodeToPoint(layout.nodeById.get(b.to)!, layout).y - source.y) - Math.abs(nodeToPoint(layout.nodeById.get(a.to)!, layout).y - source.y));
   const rank = siblings.findIndex((item) => item.id === edge.id);
   const preferredX = end.x > start.x
     ? Math.min(start.x + 48 + Math.max(0, rank) * 18, (start.x + end.x) / 2)
     : start.x + 32;
-  const obstacles = nodes.map((node) => {
-    const rect = nodeToRect(node);
+  const obstacles = layout.nodes.map((node) => {
+    const rect = nodeToRect(node, layout);
     return { x: rect.x - 4, y: rect.y - 4, width: rect.width + 8, height: rect.height + 8 };
   });
   const points = diagonalRoute(start, end, obstacles, preferredX) ?? bevelRoute([
     start,
-    ...routeAroundCards({ x: start.x + 8, y: start.y }, { x: end.x - 8, y: end.y }, obstacles, preferredX),
+    ...routeAroundCards({ x: start.x + 8, y: start.y }, { x: end.x - 8, y: end.y }, obstacles, preferredX, layout),
     end,
   ], obstacles);
   // Routing has 4px clearance; curves retain 2px for the 2.5px-wide stroke.
