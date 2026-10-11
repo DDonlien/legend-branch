@@ -1,5 +1,6 @@
 import { edges, nodes, regions } from "./data";
 import type { LegendEdge, LegendNode, Region } from "./types";
+import type { Density } from "./preferences";
 
 export const LABEL_WIDTH = 170;
 export const CARD_WIDTH = 224;
@@ -30,11 +31,13 @@ export function yearToX(year: number, ticks = timelineTicks) {
   return start.x + ((year - start.year) / (end.year - start.year)) * (end.x - start.x);
 }
 
-export function createLayout(data: { nodes: LegendNode[]; edges: LegendEdge[]; regions: Region[] }) {
+export function createLayout(data: { nodes: LegendNode[]; edges: LegendEdge[]; regions: Region[] }, density: Density = "detailed") {
+  const metrics = density === "nodes" ? { cardWidth: 0, cardHeight: 16, rowHeight: 40 } : density === "names"
+    ? { cardWidth: 160, cardHeight: 40, rowHeight: 48 } : { cardWidth: CARD_WIDTH, cardHeight: CARD_HEIGHT, rowHeight: ROW_HEIGHT };
   let y = TIMELINE_HEIGHT;
   const regionLayouts = data.regions.map((region) => {
     const rows = Math.max(0, ...data.nodes.filter((node) => node.region === region.id).map((node) => node.row)) + 1;
-    const layout = { ...region, y, height: rows * ROW_HEIGHT + 16, rows };
+    const layout = { ...region, y, height: Math.max(density === "detailed" ? 0 : 96, rows * metrics.rowHeight + 16), rows };
     y += layout.height;
     return layout;
   });
@@ -44,9 +47,9 @@ export function createLayout(data: { nodes: LegendNode[]; edges: LegendEdge[]; r
   const label = (year: number) => year < 0 ? `公元前 ${Math.abs(year)}` : String(year);
   if (min < -500) ticks = [{ year: Math.floor(min / 500) * 500, label: label(Math.floor(min / 500) * 500), x: 240 }, ...ticks.map((tick) => ({ ...tick, x: tick.x + 440 }))];
   if (max > 2050) ticks.push({ year: Math.ceil(max / 50) * 50, label: label(Math.ceil(max / 50) * 50), x: ticks.at(-1)!.x + 600 });
-  const cardEnd = Math.max(0, ...data.nodes.map((node) => yearToX(node.year, ticks) + CARD_WIDTH));
+  const cardEnd = Math.max(0, ...data.nodes.map((node) => yearToX(node.year, ticks) + metrics.cardWidth));
   // Allow the final dated card to scroll clear of the non-modal detail panel.
-  return { ...data, regionLayouts, timelineTicks: ticks, width: Math.max(3280, ticks.at(-1)!.x + 280, cardEnd + 440), height: Math.max(y, TIMELINE_HEIGHT + 192), nodeById: new Map(data.nodes.map((node) => [node.id, node])) };
+  return { ...data, density, metrics, regionLayouts, timelineTicks: ticks, width: Math.max(3280, ticks.at(-1)!.x + 280, cardEnd + 440), height: Math.max(y, TIMELINE_HEIGHT + 192), nodeById: new Map(data.nodes.map((node) => [node.id, node])) };
 }
 export type GraphLayout = ReturnType<typeof createLayout>;
 const originalLayout = createLayout({ nodes, edges, regions });
@@ -64,12 +67,12 @@ export type RouteSegment =
 export function nodeToPoint(node: LegendNode, layout = originalLayout): Point {
   const region = layout.regionLayouts.find((item) => item.id === node.region);
   if (!region) throw new Error(`Unknown region: ${node.region}`);
-  return { x: yearToX(node.year, layout.timelineTicks), y: region.y + 8 + CARD_HEIGHT / 2 + node.row * ROW_HEIGHT };
+  return { x: yearToX(node.year, layout.timelineTicks), y: region.y + 8 + Math.max(20, layout.metrics.cardHeight / 2) + node.row * layout.metrics.rowHeight };
 }
 
 export function nodeToRect(node: LegendNode, layout = originalLayout): Rect {
   const point = nodeToPoint(node, layout);
-  return { x: point.x, y: point.y - CARD_HEIGHT / 2, width: CARD_WIDTH, height: CARD_HEIGHT };
+  return { x: point.x - (layout.density === "nodes" ? 8 : 0), y: point.y - layout.metrics.cardHeight / 2, width: layout.density === "nodes" ? 16 : layout.metrics.cardWidth, height: layout.metrics.cardHeight };
 }
 
 export function segmentIntersectsRect(start: Point, end: Point, rect: Rect) {
@@ -276,7 +279,7 @@ export function edgeToRoute(edge: LegendEdge, layout = originalLayout) {
   if (!from || !to) throw new Error(`Unknown endpoints for edge: ${edge.id}`);
   const source = nodeToPoint(from, layout);
   const target = nodeToPoint(to, layout);
-  const start = { x: source.x + CARD_WIDTH + 12, y: source.y };
+  const start = { x: source.x + layout.metrics.cardWidth + 12, y: source.y };
   const end = { x: target.x - 12, y: target.y };
   // Fan out to farther rows first so diagonal tracks never cross the nearer
   // branches after they turn horizontal.

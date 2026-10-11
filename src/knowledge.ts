@@ -1,6 +1,15 @@
 import type { Confidence, LegendLink, NodeKind } from "./types";
 
-export type KnowledgeTag = { id: string; name: string; category?: "culture" | "country" | "topic" };
+export const TAG_CATEGORIES = ["country", "culture", "category", "topic"] as const;
+export type TagCategory = typeof TAG_CATEGORIES[number];
+// Optional only for compatibility with project backups made before tag groups.
+export type KnowledgeTag = { id: string; name: string; category?: TagCategory };
+const categoryIds = new Set(["myth", "folklore", "literature", "manga", "film", "game", "drama", "television"]);
+export function tagCategory(tag: KnowledgeTag): TagCategory {
+  if (tag.id.startsWith("culture:")) return "culture";
+  if (categoryIds.has(tag.id)) return "category";
+  return tag.category ?? "topic";
+}
 export type KnowledgePlacement = {
   year: number;
   endYear?: number;

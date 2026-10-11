@@ -1,5 +1,5 @@
 import { lineage } from "./graph";
-import { normalizeSearch, type GraphRelation, type KnowledgeEntry, type KnowledgeGraph, type KnowledgeTag } from "./knowledge";
+import { normalizeSearch, TAG_CATEGORIES, tagCategory, type GraphRelation, type KnowledgeEntry, type KnowledgeGraph, type KnowledgeTag, type TagCategory } from "./knowledge";
 
 export type StoryProject = {
   id: string;
@@ -9,6 +9,7 @@ export type StoryProject = {
   createdAt: string;
   updatedAt: string;
   groupIds: string[] | null;
+  groupBasis?: TagCategory;
   graph: KnowledgeGraph;
 };
 export const PROJECT_STORAGE_KEY = "legendbranch.projects.v1";
@@ -23,10 +24,12 @@ export function createProject(graph: KnowledgeGraph, root: string, name: string)
     baselineName: baseline.name, createdAt: now, updatedAt: now, groupIds: null, graph: snapshot };
 }
 
-export function projectTags(names: string, known: KnowledgeTag[]): KnowledgeTag[] {
+export function projectTags(names: string, known: KnowledgeTag[], category: TagCategory = "topic"): KnowledgeTag[] {
   const unique = [...new Map(names.split(/[,，、\n]/).map((name) => name.trim()).filter(Boolean).map((name) => [normalizeSearch(name), name])).values()];
-  return unique.map((name) => known.find((tag) => normalizeSearch(tag.name) === normalizeSearch(name)) ??
-    { id: `local-tag:${normalizeSearch(name)}`, name, category: "topic" });
+  return unique.map((name) => {
+    const existing = known.find((tag) => normalizeSearch(tag.name) === normalizeSearch(name));
+    return existing ? { ...existing, category: tagCategory(existing) } : { id: `local-tag:${category === "topic" ? "" : `${category}:`}${normalizeSearch(name)}`, name, category };
+  });
 }
 
 export function saveEntry(project: StoryProject, entry: KnowledgeEntry): StoryProject {
@@ -60,7 +63,7 @@ function entry(value: unknown): value is KnowledgeEntry {
     !["origin", "literature", "modern", "entry"].includes(String(value.kind)) ||
     !["curated", "unreviewed"].includes(String(value.reviewStatus)) ||
     !Array.isArray(value.tags) || !Array.isArray(value.sources) || !value.sources.every(source)) return false;
-  if (!value.tags.every((tag) => object(tag) && text(tag.id, 200) && text(tag.name, 1000) && (tag.category === undefined || ["country", "culture", "topic"].includes(String(tag.category))))) return false;
+  if (!value.tags.every((tag) => object(tag) && text(tag.id, 200) && text(tag.name, 1000) && (tag.category === undefined || TAG_CATEGORIES.includes(tag.category as TagCategory)))) return false;
   if (value.yearLabel !== undefined && !text(value.yearLabel, 200)) return false;
   if (value.latinName !== undefined && !text(value.latinName)) return false;
   if (value.origin !== undefined && value.origin !== "project" && value.origin !== "baseline") return false;
@@ -79,6 +82,7 @@ export function validateProject(value: unknown): value is StoryProject {
   if (!object(value) || !text(value.id, 200) || !text(value.name, 200) || !text(value.baselineRoot, 200) || !text(value.baselineName) ||
     !text(value.createdAt, 50) || !text(value.updatedAt, 50) ||
     !(value.groupIds === null || (Array.isArray(value.groupIds) && value.groupIds.length <= 200 && value.groupIds.every((id) => text(id, 200)))) ||
+    (value.groupBasis !== undefined && !TAG_CATEGORIES.includes(value.groupBasis as TagCategory)) ||
     !object(value.graph) || !Array.isArray(value.graph.entries) || value.graph.entries.length > 5000 ||
     !value.graph.entries.every(entry) || !Array.isArray(value.graph.relationships) || value.graph.relationships.length > 10000) return false;
   const ids = new Set(value.graph.entries.map((item) => item.id));

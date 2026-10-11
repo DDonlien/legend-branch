@@ -19,6 +19,8 @@ import { MdDialog } from "@material/web/dialog/dialog.js";
 import { MdFilledSelect } from "@material/web/select/filled-select.js";
 import { MdSelectOption } from "@material/web/select/select-option.js";
 import { MdFilterChip } from "@material/web/chips/filter-chip.js";
+import { MdMenu } from "@material/web/menu/menu.js";
+import { MdMenuItem } from "@material/web/menu/menu-item.js";
 
 export const MaterialButton = createComponent({ tagName: "md-gb-button", elementClass: ButtonElement, react: React });
 export const MaterialIconButton = createComponent({ tagName: "md-gb-icon-button", elementClass: IconButtonElement, react: React });
@@ -34,6 +36,8 @@ export const MaterialDialog = createComponent({ tagName: "md-dialog", elementCla
 export const MaterialSelect = createComponent({ tagName: "md-filled-select", elementClass: MdFilledSelect, react: React, events: { onChange: "change" } });
 export const MaterialOption = createComponent({ tagName: "md-select-option", elementClass: MdSelectOption, react: React });
 export const MaterialFilterChip = createComponent({ tagName: "md-filter-chip", elementClass: MdFilterChip, react: React });
+export const MaterialMenu = createComponent({ tagName: "md-menu", elementClass: MdMenu, react: React, events: { onClosing: "closing", onClosed: "closed" } });
+export const MaterialMenuItem = createComponent({ tagName: "md-menu-item", elementClass: MdMenuItem, react: React });
 
 export function MaterialIcon({ name, slot, className = "" }: { name: string; slot?: string; className?: string }) {
   return <span className={`material-symbols-rounded ${className}`} slot={slot} aria-hidden="true">{name}</span>;

@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { Contrast, Hct } from "@material/material-color-utilities";
-import { edges, nodes } from "../src/data";
-import { CANVAS_HEIGHT, CANVAS_WIDTH, CARD_WIDTH, edgeToRoute, nodeById, nodeToPoint, nodeToRect, regionLayouts, segmentIntersectsRect, timelineTicks, yearToX } from "../src/layout";
+import { edges, nodes, regions } from "../src/data";
+import { CANVAS_HEIGHT, CANVAS_WIDTH, CARD_WIDTH, createLayout, edgeToRoute, nodeById, nodeToPoint, nodeToRect, regionLayouts, segmentIntersectsRect, timelineTicks, yearToX } from "../src/layout";
+import { DENSITIES } from "../src/preferences";
 import { graphTrackColors, materialColors } from "../src/theme";
 
 // Sample the serialized SVG, including its rounding precision, independently
@@ -27,6 +28,36 @@ function renderedSamples(path: string) {
   }
   return samples;
 }
+
+test("all three densities retain chronology, real endpoints and unobstructed rounded routes", () => {
+  const detailed = createLayout({ nodes, edges, regions });
+  for (const density of DENSITIES) {
+    const layout = createLayout({ nodes, edges, regions }, density);
+    assert.equal(layout.nodes.length, nodes.length);
+    assert.equal(layout.edges.length, edges.length);
+    assert.deepEqual(layout.timelineTicks, detailed.timelineTicks);
+    for (const node of nodes) {
+      assert.equal(nodeToPoint(node, layout).x, nodeToPoint(node, detailed).x);
+      const rect = nodeToRect(node, layout);
+      const group = layout.regionLayouts.find((region) => region.id === node.region)!;
+      assert.ok(rect.y >= group.y && rect.y + rect.height <= group.y + group.height);
+    }
+    for (const edge of edges) {
+      const route = edgeToRoute(edge, layout);
+      const from = nodeToPoint(layout.nodeById.get(edge.from)!, layout);
+      const to = nodeToPoint(layout.nodeById.get(edge.to)!, layout);
+      assert.deepEqual(route.points[0], { x: from.x + layout.metrics.cardWidth + 12, y: from.y });
+      assert.deepEqual(route.points.at(-1), { x: to.x - 12, y: to.y });
+      const samples = renderedSamples(route.path);
+      for (const node of nodes) {
+        const rect = nodeToRect(node, layout);
+        const stroke = { x: rect.x - 1.5, y: rect.y - 1.5, width: rect.width + 3, height: rect.height + 3 };
+        for (let index = 1; index < samples.length; index++) assert.equal(segmentIntersectsRect(samples[index - 1], samples[index], stroke), false, `${density}: ${edge.id} crosses ${node.id}`);
+      }
+    }
+    if (density !== "detailed") assert.ok(layout.height < detailed.height);
+  }
+});
 
 test("the expanded axis preserves every historical date and chronology", () => {
   for (const tick of timelineTicks) assert.equal(yearToX(tick.year), tick.x);

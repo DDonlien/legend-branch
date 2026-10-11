@@ -1,10 +1,10 @@
 import { edges, nodes, regions } from "./data";
-import type { GraphRelation, KnowledgeEntry, KnowledgeGraph, KnowledgeTag } from "./knowledge";
+import { tagCategory, type GraphRelation, type KnowledgeEntry, type KnowledgeGraph, type KnowledgeTag, type TagCategory } from "./knowledge";
 import type { LegendEdge, LegendNode, Region } from "./types";
 
 export const fallbackGraph: KnowledgeGraph = {
   entries: nodes.map((node) => ({ ...node, reviewStatus: "curated", tags: [
-    ...node.tags.map((tag) => ({ ...tag, category: tag.id.startsWith("wd:") ? "country" as const : "topic" as const })),
+    ...node.tags.map((tag) => ({ ...tag, category: tagCategory({ ...tag, category: tag.id.startsWith("wd:") ? "country" : "topic" }) })),
     { id: `culture:${node.region}`, name: regions.find((region) => region.id === node.region)!.label, category: "culture" },
   ], placement: { year: node.year, quality: "curated", sourceUrl: node.sources[0].url,
     preferredGroup: `culture:${node.region}`, rowHint: node.row, defaultTrace: node.isTrace } })),
@@ -17,10 +17,32 @@ export function eligibleForGraph(entry: KnowledgeEntry) {
 }
 
 export function graphTags(graph: KnowledgeGraph): KnowledgeTag[] {
-  return [...new Map(graph.entries.flatMap((entry) => entry.tags).map((tag) => [tag.id, tag])).values()];
+  return [...new Map(graph.entries.flatMap((entry) => entry.tags).map((tag) => [tag.id, { ...tag, category: tagCategory(tag) }])).values()];
 }
 
 const cultureOrder = ["culture:india", "culture:china", "culture:japan", "culture:modern-china"];
+export function groupingBasis(graph: KnowledgeGraph, settings: { groupBasis?: TagCategory; groupIds: string[] | null }): TagCategory {
+  if (settings.groupBasis) return settings.groupBasis;
+  const tags = graphTags(graph);
+  const previous = settings.groupIds?.map((id) => tags.find((tag) => tag.id === id)).find(Boolean);
+  return previous ? tagCategory(previous) : (["culture", "country", "category", "topic"] as const).find((basis) => tags.some((tag) => tag.category === basis)) ?? "topic";
+}
+
+export function tagsForBasis(graph: KnowledgeGraph, basis: TagCategory) {
+  return graphTags(graph).filter((tag) => tag.category === basis).sort((a, b) => {
+    if (basis === "culture") {
+      const first = cultureOrder.indexOf(a.id), second = cultureOrder.indexOf(b.id);
+      if (first >= 0 || second >= 0) return (first < 0 ? Infinity : first) - (second < 0 ? Infinity : second);
+    }
+    return a.name.localeCompare(b.name, "zh");
+  });
+}
+
+export function groupsForBasis(graph: KnowledgeGraph, basis: TagCategory, groupIds: string[] | null) {
+  const available = tagsForBasis(graph, basis).map((tag) => tag.id);
+  return groupIds === null ? available : [...new Set(groupIds.filter((id) => available.includes(id)))];
+}
+
 export function defaultGroups(graph: KnowledgeGraph) {
   const tags = graphTags(graph);
   return [...cultureOrder.filter((id) => tags.some((tag) => tag.id === id)),

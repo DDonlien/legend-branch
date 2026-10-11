@@ -91,7 +91,7 @@ export async function discover(query: string, fetcher: typeof fetch = fetch): Pr
     const url = `https://www.wikidata.org/wiki/${e.id}`;
     const tags: KnowledgeTag[] = [...new Set(tagProperties.flatMap((p) => targets(e, p).slice(0, 4)))].flatMap((id) => {
       const name = labels.get(id);
-      return name ? [{ id: `wd:${id}`, name, category: ["P17", "P495"].some((p) => targets(e, p).includes(id)) ? "country" as const : "topic" as const }] : [];
+      return name ? [{ id: `wd:${id}`, name, category: ["P17", "P495"].some((p) => targets(e, p).includes(id)) ? "country" : targets(e, "P31").includes(id) ? "category" : "topic" }] : [];
     });
     const wiki = e.sitelinks?.zhwiki ?? e.sitelinks?.enwiki;
     const wikiLanguage = e.sitelinks?.zhwiki ? "zh" : "en";
@@ -100,7 +100,7 @@ export async function discover(query: string, fetcher: typeof fetch = fetch): Pr
       latinName: e.labels?.en?.value, kind: "entry", placement: placement(e), yearLabel: yearLabel(placement(e)),
       summary: localized(e.descriptions) ?? "",
       reviewStatus: "unreviewed", tags,
-      sources: [{ label: `Wikidata · ${e.id}`, url }, ...(wiki ? [{ label: "Wikipedia · 外链索引", url: `https://${wikiLanguage}.wikipedia.org/wiki/${encodeURIComponent(wiki.title.replace(/ /g, "_"))}` }] : [])],
+      sources: [{ label: `Wikidata · ${e.id}`, url }, ...(wiki ? [{ label: "Wikipedia", url: `https://${wikiLanguage}.wikipedia.org/wiki/${encodeURIComponent(wiki.title.replace(/ /g, "_"))}` }] : [])],
       aliases: [...new Set([...languages.flatMap((lang) => [e.labels?.[lang]?.value ?? "", ...(e.aliases?.[lang] ?? []).slice(0, 4).map((a) => a.value)])])].filter(Boolean).slice(0, 12),
     };
   });

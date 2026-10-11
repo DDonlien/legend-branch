@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fallbackGraph } from "./graph";
 import type { GraphPage, KnowledgeGraph } from "./knowledge";
+import type { TranslationKey } from "./i18n";
 
 export function useDatabaseGraph() {
   const [graph, setGraph] = useState<KnowledgeGraph>(fallbackGraph);
-  const [message, setMessage] = useState("正在加载共享图谱…");
+  const [message, setMessage] = useState<TranslationKey | null>("graphLoading");
   const pending = useRef<AbortController | null>(null);
   const loaded = useRef(false);
   const refresh = useCallback(async () => {
@@ -28,9 +29,9 @@ export function useDatabaseGraph() {
       next.relationships = next.relationships.filter((edge) => ids.has(edge.from) && ids.has(edge.to));
       loaded.current = true;
       setGraph(next);
-      setMessage("");
+      setMessage(null);
     } catch {
-      if (!controller.signal.aborted) setMessage(loaded.current ? "图谱暂时无法更新，保留已加载内容。" : "共享图谱暂时无法连接，当前显示离线样例。");
+      if (!controller.signal.aborted) setMessage(loaded.current ? "graphUpdateError" : "graphOffline");
     }
   }, []);
   useEffect(() => {

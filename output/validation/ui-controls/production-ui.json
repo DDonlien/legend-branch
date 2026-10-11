@@ -1,0 +1,19 @@
+{
+  "brand": "传说谱系",
+  "edges": 13,
+  "language": "zh-CN",
+  "nodes": 16,
+  "searchHeight": 40,
+  "searchWidth": 224,
+  "statusCapsules": 0,
+  "url": "https://legend-branch.taobe-roshambo.workers.dev/?version=d7ed237b",
+  "verifiedDensities": [
+    "detailed",
+    "names",
+    "nodes"
+  ],
+  "namesDateLabels": 0,
+  "nodesCollapsedCards": 0,
+  "nodesFocusedCards": 1,
+  "originalPreferencesRestored": true
+}

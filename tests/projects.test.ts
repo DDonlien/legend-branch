@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { fallbackGraph, defaultGroups, eligibleForGraph, graphDisplay, lineage } from "../src/graph";
+import { fallbackGraph, defaultGroups, eligibleForGraph, graphDisplay, graphTags, groupingBasis, groupsForBasis, lineage, tagsForBasis } from "../src/graph";
 import { createLayout, edgeToRoute, nodeToPoint, nodeToRect, segmentIntersectsRect } from "../src/layout";
 import { createProject, parseProjectBackup, projectTags, readProjects, removeEntry, saveEntry, saveRelation, validateProject, writeProjects } from "../src/projects";
-import type { KnowledgeEntry, KnowledgeGraph } from "../src/knowledge";
+import { TAG_CATEGORIES, type KnowledgeEntry, type KnowledgeGraph } from "../src/knowledge";
 
 function authored(id = "local:new", year = 2000): KnowledgeEntry {
   return { id, name: "自己的故事", kind: "entry", summary: "故事梗概", reviewStatus: "curated", origin: "project", sources: [], tags: [{ id: "camp", name: "阵营" }], placement: { year, quality: "authored" } };
@@ -123,4 +123,38 @@ test("personal tag names reuse stable known tags and deduplicate custom names", 
   assert.equal(tags[0].id, "wd:Q17");
   assert.equal(tags[1].id, "local-tag:阵营");
   assert.equal(projectTags("Story，story", []).length, 1);
+});
+
+test("every legacy tag has a grouping basis and the selector offers only tags in that basis", () => {
+  const project = saveEntry(createProject(fallbackGraph, "sun-wukong", "旧项目"), authored());
+  const original = JSON.stringify(project);
+  const tags = graphTags(project.graph);
+  assert.equal(tags.find((tag) => tag.id === "camp")?.category, "topic");
+  assert.equal(tags.find((tag) => tag.id === "manga")?.category, "category");
+  assert.ok(tags.every((tag) => TAG_CATEGORIES.includes(tag.category!)));
+  for (const basis of TAG_CATEGORIES) {
+    const options = tagsForBasis(project.graph, basis);
+    assert.ok(options.every((tag) => tag.category === basis));
+    assert.deepEqual(groupsForBasis(project.graph, basis, null), options.map((tag) => tag.id));
+  }
+  assert.deepEqual(groupsForBasis(project.graph, "country", ["wd:Q17", "manga", "wd:Q148", "wd:Q17", "missing"]), ["wd:Q17", "wd:Q148"]);
+  assert.deepEqual(groupsForBasis(project.graph, "country", []), []);
+  assert.equal(groupingBasis(project.graph, { groupIds: ["camp", "manga"] }), "topic");
+  assert.equal(groupingBasis(project.graph, { groupBasis: "category", groupIds: ["camp"] }), "category");
+  assert.equal(JSON.stringify(project), original);
+});
+
+test("new tag groups and their selected order round-trip without rejecting older project backups", () => {
+  const project = saveEntry(createProject(fallbackGraph, "sun-wukong", "项目"), { ...authored(), tags: projectTags("沿海共和国", [], "country") });
+  project.groupBasis = "country";
+  project.groupIds = [project.graph.entries.at(-1)!.tags[0].id, "wd:Q148"];
+  const imported = parseProjectBackup(JSON.stringify({ format: "legendbranch-project", version: 1, project }));
+  assert.equal(imported.groupBasis, "country");
+  assert.deepEqual(imported.groupIds, project.groupIds);
+  assert.equal(imported.graph.entries.at(-1)!.tags[0].category, "country");
+  assert.notEqual(projectTags("阵营", [], "category")[0].id, projectTags("阵营", [], "topic")[0].id);
+  const legacy = { ...project, groupBasis: undefined };
+  legacy.graph.entries.at(-1)!.tags[0].category = undefined;
+  assert.equal(validateProject(parseProjectBackup(JSON.stringify({ format: "legendbranch-project", version: 1, project: legacy }))), true);
+  assert.equal(validateProject({ ...project, groupBasis: "unknown" }), false);
 });

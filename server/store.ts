@@ -1,4 +1,4 @@
-import { normalizeSearch, type EntryDetail, type GraphPage, type GraphRelation, type KnowledgeEntry, type KnowledgeRelation } from "../src/knowledge";
+import { normalizeSearch, tagCategory, type EntryDetail, type GraphPage, type GraphRelation, type KnowledgeEntry, type KnowledgeRelation } from "../src/knowledge";
 import type { Database, Discovery, Statement } from "./model";
 
 type Row = {
@@ -13,7 +13,7 @@ const entrySelect = `SELECT e.*,
     'preferredGroup', preferred_group, 'rowHint', row_hint, 'defaultTrace', json(CASE WHEN default_trace THEN 'true' ELSE 'false' END))
     FROM entry_placements WHERE entry_id = e.id) AS placement,
   COALESCE((SELECT json_group_array(json_object('id', id, 'name', name, 'category', category)) FROM
-    (SELECT DISTINCT t.id, t.name, t.category FROM entry_tags et JOIN tags t ON t.id = et.tag_id WHERE et.entry_id = e.id ORDER BY t.name)), '[]') AS tags,
+    (SELECT DISTINCT t.id, t.name, t.grouping_basis AS category FROM entry_tags et JOIN tags t ON t.id = et.tag_id WHERE et.entry_id = e.id ORDER BY t.name)), '[]') AS tags,
   COALESCE((SELECT json_group_array(json_object('label', s.label, 'url', s.url)) FROM entry_sources es
     JOIN sources s ON s.url = es.source_url WHERE es.entry_id = e.id), '[]') AS sources
   FROM entries e`;
@@ -99,7 +99,7 @@ export class KnowledgeStore {
   async recordFailure(query: string, now: string) {
     await this.db.batch([this.db.prepare(`INSERT INTO search_runs(query, display_query, completed_at, status, entry_ids) VALUES (?, ?, ?, 'failed', '[]')
       ON CONFLICT(query) DO UPDATE SET completed_at = excluded.completed_at, status = 'failed'`)
-      .bind(normalizeSearch(query), query, now), this.db.prepare("INSERT INTO search_data_versions VALUES (?, 2) ON CONFLICT(query) DO UPDATE SET data_version = 2").bind(normalizeSearch(query))]);
+      .bind(normalizeSearch(query), query, now), this.db.prepare("INSERT INTO search_data_versions VALUES (?, 3) ON CONFLICT(query) DO UPDATE SET data_version = 3").bind(normalizeSearch(query))]);
   }
 
   async merge(discovery: Discovery, now: string, query?: string): Promise<{ added: number; ids: string[] }> {
@@ -126,7 +126,13 @@ export class KnowledgeStore {
       ...insertRows(this.db, "aliases", ["entry_id", "name", "search_key"], entries.flatMap((e) => [...new Set([e.name, e.latinName ?? "", ...e.aliases])].filter(Boolean).map((name) => [e.id, name, normalizeSearch(name)])), "ON CONFLICT DO NOTHING"),
       ...insertRows(this.db, "entry_sources", ["entry_id", "source_url", "first_seen", "last_seen"], entries.flatMap((e) => e.sources.map((s) => [e.id, s.url, now, now])), "ON CONFLICT(entry_id, source_url) DO UPDATE SET last_seen = excluded.last_seen"),
       ...insertRows(this.db, "summaries", ["entry_id", "body", "source_url", "quality", "retrieved_at"], entries.filter((e) => e.summary && e.sources.length).map((e) => [e.id, e.summary, e.sources[0].url, e.reviewStatus, now]), "ON CONFLICT(entry_id, source_url, body) DO UPDATE SET retrieved_at = excluded.retrieved_at"),
-      ...insertRows(this.db, "tags", ["id", "name", "search_key", "category"], entries.flatMap((e) => e.tags.map((t) => [t.id, t.name, normalizeSearch(t.name), t.category ?? "topic"])), "ON CONFLICT(id) DO UPDATE SET category = excluded.category WHERE tags.category = 'topic'"),
+      ...insertRows(this.db, "tags", ["id", "name", "search_key", "category", "grouping_basis"], entries.flatMap((e) => e.tags.map((t) => {
+        const basis = tagCategory(t);
+        return [t.id, t.name, normalizeSearch(t.name), basis === "category" ? "topic" : basis, basis];
+      })), `ON CONFLICT(id) DO UPDATE SET
+        category = CASE WHEN tags.category = 'topic' THEN excluded.category ELSE tags.category END,
+        grouping_basis = CASE WHEN tags.grouping_basis = 'topic' OR (tags.grouping_basis = 'category' AND excluded.grouping_basis IN ('country', 'culture'))
+          THEN excluded.grouping_basis ELSE tags.grouping_basis END`),
       ...insertRows(this.db, "entry_tags", ["entry_id", "tag_id", "source_url"], entries.flatMap((e) => e.tags.map((t) => [e.id, t.id, e.sources[0].url])), "ON CONFLICT DO NOTHING"),
       ...insertRows(this.db, "relationships", ["id", "from_id", "to_id", "relation", "confidence", "debated", "review_status"], relationships.map((r) => [r.id, r.from, r.to, r.relation, r.confidence, Number(r.debated), r.reviewStatus]), "ON CONFLICT DO NOTHING"),
       ...insertRows(this.db, "relationship_sources", ["relationship_id", "source_url"], relationships.flatMap((r) => r.sources.map((s) => [r.id, s.url])), "ON CONFLICT DO NOTHING"),
@@ -137,7 +143,7 @@ export class KnowledgeStore {
     if (query !== undefined) statements.push(this.db.prepare(`INSERT INTO search_runs(query, display_query, completed_at, status, entry_ids) VALUES (?, ?, ?, ?, ?)
       ON CONFLICT(query) DO UPDATE SET display_query = excluded.display_query, completed_at = excluded.completed_at,
       status = excluded.status, entry_ids = excluded.entry_ids`).bind(normalizeSearch(query), query, now, ids.length ? "success" : "empty", JSON.stringify(ids)),
-      this.db.prepare("INSERT INTO search_data_versions VALUES (?, 2) ON CONFLICT(query) DO UPDATE SET data_version = 2").bind(normalizeSearch(query)));
+      this.db.prepare("INSERT INTO search_data_versions VALUES (?, 3) ON CONFLICT(query) DO UPDATE SET data_version = 3").bind(normalizeSearch(query)));
     // D1 batch is transactional, so partial source/tag imports cannot leak.
     const results = statements.length ? await this.db.batch(statements) : [];
     return { added: results.slice(0, inserts.length).reduce((sum, item) => sum + item.meta.changes, 0), ids };

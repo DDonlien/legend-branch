@@ -13,6 +13,7 @@ function setup() {
   sqlite.exec("PRAGMA foreign_keys = ON");
   sqlite.exec(readFileSync(new URL("../server/migrations/0001_knowledge.sql", import.meta.url), "utf8"));
   sqlite.exec(readFileSync(new URL("../server/migrations/0003_graph.sql", import.meta.url), "utf8"));
+  sqlite.exec(readFileSync(new URL("../server/migrations/0004_tag_groups.sql", import.meta.url), "utf8"));
   class SqlStatement implements Statement {
     constructor(readonly sql: string, readonly values: (string | number | null)[] = []) {}
     bind(...values: (string | number | null)[]) { return new SqlStatement(this.sql, values); }
@@ -149,6 +150,37 @@ test("old search cache is refreshed once to acquire structured graph information
   assert.equal(calls, 1);
 });
 
+test("adding tag groups migrates existing metadata without changing knowledge, sources or relationships", async () => {
+  const sqlite = new DatabaseSync(":memory:");
+  sqlite.exec("PRAGMA foreign_keys = ON");
+  for (const name of ["0001_knowledge.sql", "0002_seed.sql", "0003_graph.sql"]) sqlite.exec(readFileSync(new URL(`../server/migrations/${name}`, import.meta.url), "utf8"));
+  const tables = ["entries", "summaries", "entry_sources", "entry_tags", "relationships", "relationship_sources", "entry_placements"];
+  const before = tables.map((table) => sqlite.prepare(`SELECT * FROM ${table}`).all());
+  sqlite.exec(readFileSync(new URL("../server/migrations/0004_tag_groups.sql", import.meta.url), "utf8"));
+  assert.deepEqual(tables.map((table) => sqlite.prepare(`SELECT * FROM ${table}`).all()), before);
+  assert.equal(sqlite.prepare("SELECT grouping_basis FROM tags WHERE id = 'manga'").get()?.grouping_basis, "category");
+  assert.equal(sqlite.prepare("SELECT grouping_basis FROM tags WHERE id = 'wd:Q148'").get()?.grouping_basis, "country");
+  assert.equal(sqlite.prepare("SELECT grouping_basis FROM tags WHERE id = 'journey-to-the-west'").get()?.grouping_basis, "topic");
+  assert.equal(sqlite.prepare("SELECT grouping_basis FROM tags WHERE id = 'culture:china'").get()?.grouping_basis, "culture");
+});
+
+test("previous enrichment is upgraded once and type groups cannot erase a known country", async () => {
+  const { store, sqlite } = setup();
+  const original = incoming({ tags: [{ id: "wd:Q30", name: "美国", category: "country" }, { id: "wd:type", name: "经济危机", category: "topic" }] });
+  await store.merge(discovery(original), now, "美国大萧条");
+  sqlite.prepare("UPDATE search_data_versions SET data_version = 2").run();
+  let calls = 0;
+  const provider = async () => { calls++; return discovery({ ...original, tags: [{ id: "wd:Q30", name: "美国", category: "category" }, { id: "wd:type", name: "经济危机", category: "category" }] }); };
+  await enrichSearch(store, "美国大萧条", provider, new Date(now));
+  await enrichSearch(store, "美国大萧条", provider, new Date(now));
+  assert.equal(calls, 1);
+  const entry = (await store.detail(original.id))!.entry;
+  assert.equal(entry.tags.find((tag) => tag.id === "wd:Q30")?.category, "country");
+  assert.equal(entry.tags.find((tag) => tag.id === "wd:type")?.category, "category");
+  assert.equal(sqlite.prepare("SELECT count(*) AS n FROM entries").get()?.n, 1);
+  assert.deepEqual(entry.sources, original.sources);
+});
+
 test("Wikidata stores explicit year precision and country information, omitting vague dates", async () => {
   const fixtures = {
     Q1: { id: "Q1", labels: { zh: { value: "事件" } }, claims: {
@@ -205,10 +237,11 @@ test("search input cannot change SQL structure or treat wildcards as all entries
 test("Wikidata imports country/category tags and explicit candidate relations without guessed dates", async () => {
   const claim = (id: string) => ({ rank: "normal", mainsnak: { snaktype: "value", datavalue: { value: { id } } } });
   const fixtures: Record<string, unknown> = {
-    Q1: { id: "Q1", labels: { zh: { value: "作品" } }, descriptions: { "zh-hans": { value: "English fallback", language: "en" }, zh: { value: "作品梗概", language: "zh" } }, claims: { P17: [claim("Q30")], P31: [claim("Q2")], P144: [claim("Q3")] } },
+    Q1: { id: "Q1", labels: { zh: { value: "作品" } }, descriptions: { "zh-hans": { value: "English fallback", language: "en" }, zh: { value: "作品梗概", language: "zh" } }, claims: { P17: [claim("Q30")], P31: [claim("Q2")], P921: [claim("Q4")], P144: [claim("Q3")] } },
     Q3: { id: "Q3", labels: { zh: { value: "来源作品" } } },
     Q30: { id: "Q30", labels: { zh: { value: "美国" } } },
     Q2: { id: "Q2", labels: { zh: { value: "作品类型" } } },
+    Q4: { id: "Q4", labels: { zh: { value: "冒险主题" } } },
   };
   const fetcher = (async (input: RequestInfo | URL) => {
     const url = new URL(String(input));
@@ -218,7 +251,9 @@ test("Wikidata imports country/category tags and explicit candidate relations wi
     return Response.json({ entities: Object.fromEntries(ids.map((id) => [id, fixtures[id]])) });
   }) as typeof fetch;
   const found = await discover("作品", fetcher);
-  assert.deepEqual(found.entries[0].tags.map((t) => t.name), ["美国", "作品类型"]);
+  assert.deepEqual(found.entries[0].tags.map((t) => t.name), ["美国", "作品类型", "冒险主题"]);
+  assert.equal(found.entries[0].tags.find((tag) => tag.id === "wd:Q2")?.category, "category");
+  assert.equal(found.entries[0].tags.find((tag) => tag.id === "wd:Q4")?.category, "topic");
   assert.equal(found.entries[0].summary, "作品梗概");
   assert.equal(found.entries[0].yearLabel, undefined);
   assert.equal(found.relationships.length, 1);

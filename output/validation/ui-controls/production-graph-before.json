@@ -1,0 +1,50 @@
+{
+  "verifiedAt": "2026-10-11T14:19:12.804500+00:00",
+  "entries": 20,
+  "relationships": 14,
+  "nextCursor": null,
+  "tagCategories": [
+    "country",
+    "culture",
+    "topic"
+  ],
+  "tagCount": 31,
+  "entryIds": [
+    "a-chinese-odyssey",
+    "black-myth",
+    "dragon-ball",
+    "enma",
+    "hanuman",
+    "monkey-pilgrim",
+    "ramayana",
+    "saiyuki",
+    "sun-wukong",
+    "tv-journey",
+    "wd:Q1199280",
+    "wd:Q121447410",
+    "wd:Q121560678",
+    "wd:Q16386722",
+    "wd:Q25338",
+    "wd:Q2558454",
+    "wd:Q696482",
+    "wd:Q7747693",
+    "wuzhiqi",
+    "zaju"
+  ],
+  "relationshipIds": [
+    "hanuman-to-wukong",
+    "pilgrim-to-wukong",
+    "ramayana-to-hanuman",
+    "saiyuki-to-reload",
+    "wd:P144:Q25338:Q1199280",
+    "wd:P144:Q25338:Q16386722",
+    "wd:P144:Q25338:Q7747693",
+    "wukong-to-black-myth",
+    "wukong-to-dragon-ball",
+    "wukong-to-odyssey",
+    "wukong-to-saiyuki",
+    "wukong-to-tv",
+    "wuzhiqi-to-wukong",
+    "zaju-to-wukong"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "version": "d7ed237b-f18d-4462-b3c4-7193523be3f2",
+  "url": "https://legend-branch.taobe-roshambo.workers.dev",
+  "verifiedAt": "2026-10-11T14:22:57.016095+00:00",
+  "htmlMatchesBuild": true,
+  "assets": [
+    {
+      "path": "/assets/index-CivNnFH5.js",
+      "httpStatus": 200,
+      "bytes": 595069,
+      "sha256": "369729d3308367a736e0d479d25e3664faa670a7ae551ed075f4065289e6705f",
+      "matchesBuild": true
+    },
+    {
+      "path": "/assets/index-XnVGSltv.css",
+      "httpStatus": 200,
+      "bytes": 37364,
+      "sha256": "d834b1465b252b07681b3af8bf45713e99c2098e4fb328e837b202cad39ca498",
+      "matchesBuild": true
+    }
+  ]
+}
