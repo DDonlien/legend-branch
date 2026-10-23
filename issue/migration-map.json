@@ -1,0 +1,905 @@
+{
+  "history_base": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+  "versioncontrolid": "versioncontrolid",
+  "versioncontrolid_definition": "pending",
+  "sources": [
+    {
+      "path": "REQUIREMENTS.md",
+      "sha256": "87868f7681b42fa02c6d025cbee8b8496b1579ba05d60cfc3c101e273becd132",
+      "bytes": 16146,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "b390e67b74c79a58288a0b31be53f8c785faf624"
+    },
+    {
+      "path": "agent-log/20260531124834-utcp8-gpt5.md",
+      "sha256": "561d013907ffd8daa7de8a0a728024f8f60394b3c4b2881fa75a4c04bb375085",
+      "bytes": 2873,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "3438745a600c602db17ebfea009e501c2b115c90"
+    },
+    {
+      "path": "agent-log/20260531131436-utcp8-gpt5.md",
+      "sha256": "49b67981d3eb74814309c99149fa41a0b246a3ea0ad213c1c70f66b52df2e154",
+      "bytes": 3520,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "b16ec80bc297a42a2318a66d8fb0be03c6166b30"
+    },
+    {
+      "path": "agent-log/20261011001345-utcp8-gpt6.md",
+      "sha256": "78ef29b5ece742f9b9113e8ee49104e22f5918c4d60df14ccce9dc5cba50cc38",
+      "bytes": 5279,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "7717d1c0b963d465643f64d28f89c0d6933e9e97"
+    },
+    {
+      "path": "agent-log/20261011013234-utcp8-gpt6.md",
+      "sha256": "94cac379826b3294f84f9bd3f7b6cc5d0d083a4e3829d68f568d539e9b8ea125",
+      "bytes": 3363,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "e428cd778811dc4165a2015ce59e16415898c7bf"
+    },
+    {
+      "path": "agent-log/20261011013523-utcp8-gpt6.md",
+      "sha256": "af48fe56d367bd8d6b4d490ca468da7d48fca421403dee3feedff62d5b09d859",
+      "bytes": 1943,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "2c489fb74d001b63dee1faca1dc1b7e4dc1648c7"
+    },
+    {
+      "path": "agent-log/20261011022101-utcp8-gpt6.md",
+      "sha256": "fd0ddf67c8e303ebedb58313e23af1efba7ebf85b72262ccd8d802034936e085",
+      "bytes": 5501,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "3c512af84280ffb6f307162a43a39d3190370e86"
+    },
+    {
+      "path": "agent-log/20261011023727-utcp8-gpt6.md",
+      "sha256": "4af39e6ae7c3b78459d8a2df10dd3bef1a0a26f3d166a1dca66e62fa79ae73e3",
+      "bytes": 3996,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "2a930cd1f489c6ecd75f3b1fd66b08b06d9a6a03"
+    },
+    {
+      "path": "agent-log/20261011120829-utcp8-gpt6.md",
+      "sha256": "0ca49a87e19326881a97534853319867af9ad162a0024335a063997304f6b581",
+      "bytes": 2367,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "31f98ddb7baeaea8078a7fe228f91c95b20b46d3"
+    },
+    {
+      "path": "agent-log/20261011132518-utcp8-gpt6.md",
+      "sha256": "b5a8a445a29343d631c3ce8230b14424dde0576e0cd71c09bf84ff45badc8709",
+      "bytes": 6136,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "2851af03081a711eb82ecd19db25c6349e3bc8cc"
+    },
+    {
+      "path": "agent-log/20261011210832-utcp8-gpt6.md",
+      "sha256": "e8c3dd3dce04f53a4e1906e0ff23fce5e0d2686d5db589e962a7103b76817397",
+      "bytes": 3086,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "cfbc04aebc4db32234fefcc8d643b7c8136889a6"
+    },
+    {
+      "path": "agent-log/20261011211713-utcp8-gpt6.md",
+      "sha256": "0e83c830b506f13a552e23c9c9a225816b41d6895e27f75c67c1274daa286de1",
+      "bytes": 2869,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "cc1658e62e6d34a2a9eefff6d095e18de63647da"
+    },
+    {
+      "path": "agent-log/20261011223819-utcp8-gpt6.md",
+      "sha256": "2371e8e119c1fb990b3a0ca82eac1cb38fb6c6ee34822708b64cc5ff37c10dd0",
+      "bytes": 6836,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "1c4cbbea4598ce9a00e71bfcfbd8d5a5ac643247"
+    },
+    {
+      "path": "agent-log/ChatGPT-Legend Branch 传说图谱.md",
+      "sha256": "68074c4fa04141b8a664b6288f2c053f44986a40cf099456c9f740076112c9e5",
+      "bytes": 65970,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "cb6a9ffa4c66b9a84429bbf7bcfdd0302d17da02"
+    },
+    {
+      "path": "server/REQUIREMENTS.md",
+      "sha256": "ccd02e9a7b36c590f1e7d11f93f2547fcc7cd0d692663f8ac12759aa7dd75589",
+      "bytes": 1497,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "16152a7bbe277ef6baf3a66f44d09f7c84b1e994"
+    },
+    {
+      "path": "server/agent-log/20261011022101-utcp8-gpt6.md",
+      "sha256": "20876aed0bc0d63f4bdb16d5a2a2a3f91222067b1f18bb1234afe2271b549dff",
+      "bytes": 3041,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "e6a30327f87ea483bfa08d97b161d9691b5b03a4"
+    },
+    {
+      "path": "server/agent-log/20261011132518-utcp8-gpt6.md",
+      "sha256": "b5a8a445a29343d631c3ce8230b14424dde0576e0cd71c09bf84ff45badc8709",
+      "bytes": 6136,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "2851af03081a711eb82ecd19db25c6349e3bc8cc"
+    },
+    {
+      "path": "server/agent-log/20261011223819-utcp8-gpt6.md",
+      "sha256": "dafff6626462d4012e668e3fea46cf72ad0cba2980f8ba83fb52c1b63b86751d",
+      "bytes": 2764,
+      "head": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
+      "tracked": true,
+      "status_before": "",
+      "blob": "f7f5632da51b1ad648417f9b5ad095693af29c77"
+    }
+  ],
+  "requirements": [
+    {
+      "path": "REQUIREMENTS.md",
+      "issues": [
+        "issue/issue-FOUND-A-000-CONTENT-product-foundation-versioncontrolid.md",
+        "issue/issue-FOUND-B-000-DB-model-versioncontrolid.md",
+        "issue/issue-FOUND-C-000-DB-content-versioncontrolid.md",
+        "issue/issue-migration-9e89a53976d6-QA-trace-demo-versioncontrolid.md",
+        "issue/issue-P1-A-000-PM-graph-layout-versioncontrolid.md",
+        "issue/issue-P1-B-000-PM-data-versioncontrolid.md",
+        "issue/issue-P1-C-000-DB-trace-interaction-versioncontrolid.md",
+        "issue/issue-P1-D-000-DOC-visual-languages-versioncontrolid.md",
+        "issue/issue-P1-E-000-QA-acceptance-versioncontrolid.md",
+        "issue/issue-P1-F-000-DB-project-goal-versioncontrolid.md",
+        "issue/issue-P1-G-000-DOC-m3-expressive-git-graph-versioncontrolid.md",
+        "issue/issue-P2-A-000-FE-experience-versioncontrolid.md",
+        "issue/issue-P2-B-000-PM-content-versioncontrolid.md",
+        "issue/issue-P2-C-000-DATA-knowledge-versioncontrolid.md",
+        "issue/issue-P2-D-001-DB-data-database-graph-versioncontrolid.md",
+        "issue/issue-P2-E-001-API-story-project-versioncontrolid.md",
+        "issue/issue-P2-F-001-DB-configuration-tags-versioncontrolid.md",
+        "issue/issue-P2-G-001-QA-graph-versioncontrolid.md",
+        "issue/issue-DOC-A-000-DOC-repository-initialization-versioncontrolid.md",
+        "issue/issue-X-A-001-DOC-ai-collaboration-versioncontrolid.md",
+        "issue/issue-X-B-000-DB-release-content-versioncontrolid.md"
+      ],
+      "legacy_ids": [
+        "FOUND-A-000",
+        "FOUND-A-001",
+        "FOUND-A-002",
+        "FOUND-A-003",
+        "FOUND-A-004",
+        "FOUND-B-000",
+        "FOUND-B-001",
+        "FOUND-B-002",
+        "FOUND-B-003",
+        "FOUND-C-000",
+        "FOUND-C-001",
+        "FOUND-C-002",
+        "FOUND-C-003",
+        "P1-A-000",
+        "P1-A-001",
+        "P1-A-002",
+        "P1-A-003",
+        "P1-B-000",
+        "P1-B-001",
+        "P1-B-002",
+        "P1-B-003",
+        "P1-C-000",
+        "P1-C-001",
+        "P1-C-002",
+        "P1-C-003",
+        "P1-D-000",
+        "P1-D-001",
+        "P1-D-002",
+        "P1-D-003",
+        "P1-D-004",
+        "P1-D-005",
+        "P1-E-000",
+        "P1-E-001",
+        "P1-E-002",
+        "P1-E-003",
+        "P1-E-004",
+        "P1-E-005",
+        "P1-F-000",
+        "P1-F-001",
+        "P1-F-002",
+        "P1-F-003",
+        "P1-F-004",
+        "P1-F-005",
+        "P1-F-006",
+        "P1-F-007",
+        "P1-F-008",
+        "P1-G-000",
+        "P1-G-001",
+        "P1-G-001-A",
+        "P1-G-001-B",
+        "P1-G-001-C",
+        "P1-G-001-D",
+        "P1-G-001-E",
+        "P1-G-002",
+        "P1-G-002-A",
+        "P1-G-002-B",
+        "P1-G-002-C",
+        "P1-G-002-D",
+        "P1-G-002-E",
+        "P1-G-003",
+        "P1-G-003-A",
+        "P1-G-003-B",
+        "P1-G-003-C",
+        "P1-G-003-D",
+        "P1-G-003-E",
+        "P1-G-003-F",
+        "P1-G-003-G",
+        "P1-G-003-H",
+        "P1-G-004",
+        "P1-G-004-A",
+        "P1-G-004-B",
+        "P1-G-004-C",
+        "P1-G-004-D",
+        "P2-A-000",
+        "P2-A-001",
+        "P2-A-002",
+        "P2-A-002-A",
+        "P2-A-002-B",
+        "P2-A-002-C",
+        "P2-A-003",
+        "P2-A-004",
+        "P2-B-000",
+        "P2-B-001",
+        "P2-B-002",
+        "P2-B-003",
+        "P2-C-000",
+        "P2-C-001",
+        "P2-C-001-A",
+        "P2-C-001-B",
+        "P2-C-002",
+        "P2-C-002-A",
+        "P2-C-002-B",
+        "P2-C-002-C",
+        "P2-C-003",
+        "P2-C-003-A",
+        "P2-C-003-B",
+        "P2-C-003-C",
+        "P2-C-004",
+        "P2-C-005",
+        "P2-C-006",
+        "P2-D-001",
+        "P2-D-002",
+        "P2-D-003",
+        "P2-D-004",
+        "P2-E-001",
+        "P2-E-002",
+        "P2-E-003",
+        "P2-E-004",
+        "P2-E-005",
+        "P2-F-001",
+        "P2-F-002",
+        "P2-F-003",
+        "P2-F-004",
+        "P2-F-005",
+        "P2-G-001",
+        "P2-G-002",
+        "P2-G-003",
+        "P2-G-004",
+        "P2-G-005",
+        "DOC-A-000",
+        "DOC-A-001",
+        "DOC-A-002",
+        "DOC-A-003",
+        "DOC-A-004",
+        "DOC-A-005",
+        "DOC-A-006",
+        "X-A-001",
+        "X-A-002",
+        "X-A-003",
+        "X-A-004",
+        "X-A-005",
+        "X-B-000",
+        "X-B-001",
+        "X-B-002",
+        "X-B-003",
+        "X-B-004"
+      ]
+    },
+    {
+      "path": "server/REQUIREMENTS.md",
+      "issues": [
+        "issue/issue-DB-A-001-DB-storage-versioncontrolid.md",
+        "issue/issue-API-A-001-API-search-versioncontrolid.md",
+        "issue/issue-GRAPH-A-001-API-data-database-graph-versioncontrolid.md",
+        "issue/issue-DEPLOY-A-001-QA-service-versioncontrolid.md"
+      ],
+      "legacy_ids": [
+        "DB-A-001",
+        "DB-A-002",
+        "DB-A-003",
+        "DB-A-004",
+        "API-A-001",
+        "API-A-002",
+        "API-A-003",
+        "API-A-004",
+        "API-A-005",
+        "GRAPH-A-001",
+        "GRAPH-A-002",
+        "GRAPH-A-003",
+        "DEPLOY-A-001",
+        "DEPLOY-A-002"
+      ]
+    }
+  ],
+  "logs": [
+    {
+      "path": "agent-log/ChatGPT-Legend Branch 传说图谱.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "agent-log/20261011132518-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "agent-log/20261011013234-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "agent-log/20261011013523-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "agent-log/20261011210832-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "agent-log/20261011022101-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "agent-log/20261011001345-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "P1-G-000"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "agent-log/20260531131436-utcp8-gpt5.md",
+      "role": "historical-evidence",
+      "issues": [
+        "FOUND-A-000"
+      ],
+      "matched_legacy_ids": [
+        "FOUND-A-004",
+        "FOUND-B-000",
+        "FOUND-C-000",
+        "P1-A-000",
+        "P1-B-000",
+        "P1-C-000",
+        "P1-D-000",
+        "P1-E-000"
+      ]
+    },
+    {
+      "path": "agent-log/20260531124834-utcp8-gpt5.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-A-000"
+      ],
+      "matched_legacy_ids": [
+        "DOC-A-000",
+        "FOUND-A-000",
+        "P1-F-000"
+      ]
+    },
+    {
+      "path": "agent-log/20261011223819-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "agent-log/20261011023727-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "agent-log/20261011120829-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "agent-log/20261011211713-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "migration-9e89a53976d6"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "server/agent-log/20261011132518-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "server/agent-log/20261011022101-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    },
+    {
+      "path": "server/agent-log/20261011223819-utcp8-gpt6.md",
+      "role": "historical-evidence",
+      "issues": [
+        "DOC-migration-20261023"
+      ],
+      "matched_legacy_ids": []
+    }
+  ],
+  "issues": [
+    {
+      "id": "FOUND-A-000",
+      "type": "CONTENT",
+      "file": "issue-FOUND-A-000-CONTENT-product-foundation-versioncontrolid.md",
+      "title": "FOUND-A：产品基础",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "FOUND-A-000",
+        "FOUND-A-001",
+        "FOUND-A-002",
+        "FOUND-A-003",
+        "FOUND-A-004"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "FOUND-B-000",
+      "type": "DB",
+      "file": "issue-FOUND-B-000-DB-model-versioncontrolid.md",
+      "title": "FOUND-B：领域模型",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "FOUND-B-000",
+        "FOUND-B-001",
+        "FOUND-B-002",
+        "FOUND-B-003"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "FOUND-C-000",
+      "type": "DB",
+      "file": "issue-FOUND-C-000-DB-content-versioncontrolid.md",
+      "title": "FOUND-C：内容可信度",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "FOUND-C-000",
+        "FOUND-C-001",
+        "FOUND-C-002",
+        "FOUND-C-003"
+      ],
+      "state": "进行中（原文同时包含已完成与未完成项）"
+    },
+    {
+      "id": "migration-9e89a53976d6",
+      "type": "QA",
+      "file": "issue-migration-9e89a53976d6-QA-trace-demo-versioncontrolid.md",
+      "title": "P1：孙悟空 Trace 最小化 Demo",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [],
+      "state": "已确认约束 / 状态待核对（原文未单列完成状态）"
+    },
+    {
+      "id": "P1-A-000",
+      "type": "PM",
+      "file": "issue-P1-A-000-PM-graph-layout-versioncontrolid.md",
+      "title": "P1-A：单页图谱布局",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P1-A-000",
+        "P1-A-001",
+        "P1-A-002",
+        "P1-A-003"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P1-B-000",
+      "type": "PM",
+      "file": "issue-P1-B-000-PM-data-versioncontrolid.md",
+      "title": "P1-B：孙悟空样例数据",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P1-B-000",
+        "P1-B-001",
+        "P1-B-002",
+        "P1-B-003"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P1-C-000",
+      "type": "DB",
+      "file": "issue-P1-C-000-DB-trace-interaction-versioncontrolid.md",
+      "title": "P1-C：Trace 与详情交互",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P1-C-000",
+        "P1-C-001",
+        "P1-C-002",
+        "P1-C-003"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P1-D-000",
+      "type": "DOC",
+      "file": "issue-P1-D-000-DOC-visual-languages-versioncontrolid.md",
+      "title": "P1-D：最小视觉语言",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P1-D-000",
+        "P1-D-001",
+        "P1-D-002",
+        "P1-D-003",
+        "P1-D-004",
+        "P1-D-005"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P1-E-000",
+      "type": "QA",
+      "file": "issue-P1-E-000-QA-acceptance-versioncontrolid.md",
+      "title": "P1-E：验收",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P1-E-000",
+        "P1-E-001",
+        "P1-E-002",
+        "P1-E-003",
+        "P1-E-004",
+        "P1-E-005"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P1-F-000",
+      "type": "DB",
+      "file": "issue-P1-F-000-DB-project-goal-versioncontrolid.md",
+      "title": "P1-F：明确不做",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P1-F-000",
+        "P1-F-001",
+        "P1-F-002",
+        "P1-F-003",
+        "P1-F-004",
+        "P1-F-005",
+        "P1-F-006",
+        "P1-F-007",
+        "P1-F-008"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P1-G-000",
+      "type": "DOC",
+      "file": "issue-P1-G-000-DOC-m3-expressive-git-graph-versioncontrolid.md",
+      "title": "P1-G：M3 Expressive 与 Git graph 改造",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P1-G-000",
+        "P1-G-001",
+        "P1-G-001-A",
+        "P1-G-001-B",
+        "P1-G-001-C",
+        "P1-G-001-D",
+        "P1-G-001-E",
+        "P1-G-002",
+        "P1-G-002-A",
+        "P1-G-002-B",
+        "P1-G-002-C",
+        "P1-G-002-D",
+        "P1-G-002-E",
+        "P1-G-003",
+        "P1-G-003-A",
+        "P1-G-003-B",
+        "P1-G-003-C",
+        "P1-G-003-D",
+        "P1-G-003-E",
+        "P1-G-003-F",
+        "P1-G-003-G",
+        "P1-G-003-H",
+        "P1-G-004",
+        "P1-G-004-A",
+        "P1-G-004-B",
+        "P1-G-004-C",
+        "P1-G-004-D"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P2-A-000",
+      "type": "FE",
+      "file": "issue-P2-A-000-FE-experience-versioncontrolid.md",
+      "title": "P2-A：扩展阅读体验",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-A-000",
+        "P2-A-001",
+        "P2-A-002",
+        "P2-A-002-A",
+        "P2-A-002-B",
+        "P2-A-002-C",
+        "P2-A-003",
+        "P2-A-004"
+      ],
+      "state": "进行中（原文同时包含已完成与未完成项）"
+    },
+    {
+      "id": "P2-B-000",
+      "type": "PM",
+      "file": "issue-P2-B-000-PM-content-versioncontrolid.md",
+      "title": "P2-B：内容生产与审核",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-B-000",
+        "P2-B-001",
+        "P2-B-002",
+        "P2-B-003"
+      ],
+      "state": "待处理（原文未完成项保持未勾选）"
+    },
+    {
+      "id": "P2-C-000",
+      "type": "DATA",
+      "file": "issue-P2-C-000-DATA-knowledge-versioncontrolid.md",
+      "title": "P2-C：增量共享知识库",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-C-000",
+        "P2-C-001",
+        "P2-C-001-A",
+        "P2-C-001-B",
+        "P2-C-002",
+        "P2-C-002-A",
+        "P2-C-002-B",
+        "P2-C-002-C",
+        "P2-C-003",
+        "P2-C-003-A",
+        "P2-C-003-B",
+        "P2-C-003-C",
+        "P2-C-004",
+        "P2-C-005",
+        "P2-C-006"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P2-D-001",
+      "type": "DB",
+      "file": "issue-P2-D-001-DB-data-database-graph-versioncontrolid.md",
+      "title": "P2-D：数据库时间图谱",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-D-001",
+        "P2-D-002",
+        "P2-D-003",
+        "P2-D-004"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P2-E-001",
+      "type": "API",
+      "file": "issue-P2-E-001-API-story-project-versioncontrolid.md",
+      "title": "P2-E：个人故事项目空间",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-E-001",
+        "P2-E-002",
+        "P2-E-003",
+        "P2-E-004",
+        "P2-E-005"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P2-F-001",
+      "type": "DB",
+      "file": "issue-P2-F-001-DB-configuration-tags-versioncontrolid.md",
+      "title": "P2-F：可配置标签分组",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-F-001",
+        "P2-F-002",
+        "P2-F-003",
+        "P2-F-004",
+        "P2-F-005"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "P2-G-001",
+      "type": "QA",
+      "file": "issue-P2-G-001-QA-graph-versioncontrolid.md",
+      "title": "P2-G：工具栏与图谱显示",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-G-001",
+        "P2-G-002",
+        "P2-G-003",
+        "P2-G-004",
+        "P2-G-005"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "DOC-A-000",
+      "type": "DOC",
+      "file": "issue-DOC-A-000-DOC-repository-initialization-versioncontrolid.md",
+      "title": "DOC-A：仓库初始化",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "DOC-A-000",
+        "DOC-A-001",
+        "DOC-A-002",
+        "DOC-A-003",
+        "DOC-A-004",
+        "DOC-A-005",
+        "DOC-A-006"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "X-A-001",
+      "type": "DOC",
+      "file": "issue-X-A-001-DOC-ai-collaboration-versioncontrolid.md",
+      "title": "X-A：AI 可追踪协作",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "X-A-001",
+        "X-A-002",
+        "X-A-003",
+        "X-A-004",
+        "X-A-005"
+      ],
+      "state": "待处理（原文未完成项保持未勾选）"
+    },
+    {
+      "id": "X-B-000",
+      "type": "DB",
+      "file": "issue-X-B-000-DB-release-content-versioncontrolid.md",
+      "title": "X-B：发布内容完整性",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "X-B-000",
+        "X-B-001",
+        "X-B-002",
+        "X-B-003",
+        "X-B-004"
+      ],
+      "state": "待处理（原文未完成项保持未勾选）"
+    },
+    {
+      "id": "DB-A-001",
+      "type": "DB",
+      "file": "issue-DB-A-001-DB-storage-versioncontrolid.md",
+      "title": "DB-A：增量存储",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "DB-A-001",
+        "DB-A-002",
+        "DB-A-003",
+        "DB-A-004"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "API-A-001",
+      "type": "API",
+      "file": "issue-API-A-001-API-search-versioncontrolid.md",
+      "title": "API-A：搜索增补",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "API-A-001",
+        "API-A-002",
+        "API-A-003",
+        "API-A-004",
+        "API-A-005"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "GRAPH-A-001",
+      "type": "API",
+      "file": "issue-GRAPH-A-001-API-data-database-graph-versioncontrolid.md",
+      "title": "GRAPH-A：数据库图谱",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "GRAPH-A-001",
+        "GRAPH-A-002",
+        "GRAPH-A-003"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "DEPLOY-A-001",
+      "type": "QA",
+      "file": "issue-DEPLOY-A-001-QA-service-versioncontrolid.md",
+      "title": "DEPLOY-A：共享服务",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "DEPLOY-A-001",
+        "DEPLOY-A-002"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    }
+  ],
+  "note": "Original states retained; historical log evidence does not complete current tasks."
+}

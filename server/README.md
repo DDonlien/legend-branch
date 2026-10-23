@@ -59,6 +59,6 @@ npm run deploy
 `npm run test` 在真实 SQLite 中验证迁移、去重、并发、梗概与来源合并、事务回滚、缓存和上游失败；来源接入以独立 API 数据验证标签和候选关系。`npm run build` 同时检查前后端类型。
 
 - 协作规范：[AGENTS.md](AGENTS.md)
-- 需求状态：[REQUIREMENTS.md](REQUIREMENTS.md)
+- 需求状态：[Issue 入口](../issue/issue-DB-A-001-DB-storage-versioncontrolid.md)
 - 视觉边界：[DESIGN.md](DESIGN.md)
-- 本模块执行记录：`agent-log/`
+- 本模块执行记录：`../issue/README.md`
