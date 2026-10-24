@@ -97,7 +97,7 @@ npm run build
 ## 文档入口
 
 - Agent 协作规范：`AGENTS.md`
-- 需求与验收追踪：`issue/issue-FOUND-A-000-CONTENT-product-foundation-versioncontrolid.md`
+- 需求与验收追踪：`issue/issue_明确传说谱系的产品定位目标用户与技术方向.md`
 - 视觉规范：`DESIGN.md`
 - 前期讨论与执行日志：`issue/README.md`
 - 共享知识库说明：[server/README.md](server/README.md)

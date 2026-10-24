@@ -1,7 +1,7 @@
 {
   "history_base": "50e6b35a49bf4a954ba7acc6c6a54002ea471030",
-  "versioncontrolid": "versioncontrolid",
-  "versioncontrolid_definition": "pending",
+  "versioncontrolid": null,
+  "versioncontrolid_definition": "task implementation Git commit hash or final submitted Perforce changelist",
   "sources": [
     {
       "path": "REQUIREMENTS.md",
@@ -170,27 +170,32 @@
     {
       "path": "REQUIREMENTS.md",
       "issues": [
-        "issue/issue-FOUND-A-000-CONTENT-product-foundation-versioncontrolid.md",
-        "issue/issue-FOUND-B-000-DB-model-versioncontrolid.md",
-        "issue/issue-FOUND-C-000-DB-content-versioncontrolid.md",
-        "issue/issue-migration-9e89a53976d6-QA-trace-demo-versioncontrolid.md",
-        "issue/issue-P1-A-000-PM-graph-layout-versioncontrolid.md",
-        "issue/issue-P1-B-000-PM-data-versioncontrolid.md",
-        "issue/issue-P1-C-000-DB-trace-interaction-versioncontrolid.md",
-        "issue/issue-P1-D-000-DOC-visual-languages-versioncontrolid.md",
-        "issue/issue-P1-E-000-QA-acceptance-versioncontrolid.md",
-        "issue/issue-P1-F-000-DB-project-goal-versioncontrolid.md",
-        "issue/issue-P1-G-000-DOC-m3-expressive-git-graph-versioncontrolid.md",
-        "issue/issue-P2-A-000-FE-experience-versioncontrolid.md",
-        "issue/issue-P2-B-000-PM-content-versioncontrolid.md",
-        "issue/issue-P2-C-000-DATA-knowledge-versioncontrolid.md",
-        "issue/issue-P2-D-001-DB-data-database-graph-versioncontrolid.md",
-        "issue/issue-P2-E-001-API-story-project-versioncontrolid.md",
-        "issue/issue-P2-F-001-DB-configuration-tags-versioncontrolid.md",
-        "issue/issue-P2-G-001-QA-graph-versioncontrolid.md",
-        "issue/issue-DOC-A-000-DOC-repository-initialization-versioncontrolid.md",
-        "issue/issue-X-A-001-DOC-ai-collaboration-versioncontrolid.md",
-        "issue/issue-X-B-000-DB-release-content-versioncontrolid.md"
+        "issue/issue_明确传说谱系的产品定位目标用户与技术方向.md",
+        "issue/issue_建立支持多来源分支与合流的传说演化图谱模型.md",
+        "issue/issue_为传说传播关系标记可信度并提供外部来源索引.md",
+        "issue/issue_明确孙悟空Trace最小Demo的阅读与视觉验证范围.md",
+        "issue/issue_实现可双向滚动的单页孙悟空时间图谱.md",
+        "issue/issue_建立孙悟空谱系样例并标注关系可信度与来源.md",
+        "issue/issue_实现孙悟空Trace高亮清除与节点详情浮层.md",
+        "issue/issue_建立以节点形状与线型表达传说图谱的初版视觉基准.md",
+        "issue/issue_记录孙悟空Trace最小Demo的人工验收.md",
+        "issue/issue_明确孙悟空Trace最小Demo的延后范围.md",
+        "issue/issue_用M3 Expressive组件与平滑Git图连线改造传说图谱.md",
+        "issue/issue_支持同时Trace多个目标角色.md",
+        "issue/issue_扩展传说条目搜索与独立筛选面板.md",
+        "issue/issue_支持文化区块合并与政权分叉.md",
+        "issue/issue_扩展九尾狐阎罗王天狗与龙的谱系样例.md",
+        "issue/issue_评估AI候选内容生成与人工审核及社区修正流程.md",
+        "issue/issue_以站内搜索驱动共享知识库增补与持续入库.md",
+        "issue/issue_让数据库时间图谱随新增条目刷新并保留历史布局.md",
+        "issue/issue_从知识谱系创建独立保存的个人故事项目并编辑节点关系.md",
+        "issue/issue_按标签依据配置图谱分组并保存每个空间的偏好.md",
+        "issue/issue_调整传说图谱工具栏搜索位置与收起恢复入口.md",
+        "issue/issue_为传说谱系界面增加中英文切换并保存偏好.md",
+        "issue/issue_提供节点名称与详细卡片三档图谱密度并保持连线避障.md",
+        "issue/issue_建立传说谱系仓库的协作文档基础.md",
+        "issue/issue_追踪AI协作需求与历史执行记录.md",
+        "issue/issue_校验传说发布内容的可信度与外部来源完整性.md"
       ],
       "legacy_ids": [
         "FOUND-A-000",
@@ -334,10 +339,18 @@
     {
       "path": "server/REQUIREMENTS.md",
       "issues": [
-        "issue/issue-DB-A-001-DB-storage-versioncontrolid.md",
-        "issue/issue-API-A-001-API-search-versioncontrolid.md",
-        "issue/issue-GRAPH-A-001-API-data-database-graph-versioncontrolid.md",
-        "issue/issue-DEPLOY-A-001-QA-service-versioncontrolid.md"
+        "issue/issue_持久保存共享知识条目、来源版本及关系.md",
+        "issue/issue_幂等导入原有共享知识样例.md",
+        "issue/issue_按来源实体标识合并重复搜索入库的知识条目.md",
+        "issue/issue_增量合并来源与梗概时保护人工内容和关系可信度.md",
+        "issue/issue_为知识标签保存四类分组依据并无损迁移既有数据.md",
+        "issue/issue_搜索时从 Wikidata 增补共享知识库.md",
+        "issue/issue_缓存重复增补查询并在失败时保留既有搜索结果.md",
+        "issue/issue_校验搜索输入并限制 Wikidata 来源请求范围.md",
+        "issue/issue_为自动发现的传播关系保存来源并标记待复核.md",
+        "issue/issue_区分 Wikidata 类别与主题并升级旧搜索缓存.md",
+        "issue/issue_提供完整分页数据库图谱并迁移结构化年代与文化标签.md",
+        "issue/issue_验证并发布Cloudflare Worker与D1共享服务.md"
       ],
       "legacy_ids": [
         "DB-A-001",
@@ -504,7 +517,7 @@
     {
       "id": "FOUND-A-000",
       "type": "CONTENT",
-      "file": "issue-FOUND-A-000-CONTENT-product-foundation-versioncontrolid.md",
+      "file": "issue_明确传说谱系的产品定位目标用户与技术方向.md",
       "title": "FOUND-A：产品基础",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -519,7 +532,7 @@
     {
       "id": "FOUND-B-000",
       "type": "DB",
-      "file": "issue-FOUND-B-000-DB-model-versioncontrolid.md",
+      "file": "issue_建立支持多来源分支与合流的传说演化图谱模型.md",
       "title": "FOUND-B：领域模型",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -533,7 +546,7 @@
     {
       "id": "FOUND-C-000",
       "type": "DB",
-      "file": "issue-FOUND-C-000-DB-content-versioncontrolid.md",
+      "file": "issue_为传说传播关系标记可信度并提供外部来源索引.md",
       "title": "FOUND-C：内容可信度",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -547,7 +560,7 @@
     {
       "id": "migration-9e89a53976d6",
       "type": "QA",
-      "file": "issue-migration-9e89a53976d6-QA-trace-demo-versioncontrolid.md",
+      "file": "issue_明确孙悟空Trace最小Demo的阅读与视觉验证范围.md",
       "title": "P1：孙悟空 Trace 最小化 Demo",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [],
@@ -556,7 +569,7 @@
     {
       "id": "P1-A-000",
       "type": "PM",
-      "file": "issue-P1-A-000-PM-graph-layout-versioncontrolid.md",
+      "file": "issue_实现可双向滚动的单页孙悟空时间图谱.md",
       "title": "P1-A：单页图谱布局",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -570,7 +583,7 @@
     {
       "id": "P1-B-000",
       "type": "PM",
-      "file": "issue-P1-B-000-PM-data-versioncontrolid.md",
+      "file": "issue_建立孙悟空谱系样例并标注关系可信度与来源.md",
       "title": "P1-B：孙悟空样例数据",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -584,7 +597,7 @@
     {
       "id": "P1-C-000",
       "type": "DB",
-      "file": "issue-P1-C-000-DB-trace-interaction-versioncontrolid.md",
+      "file": "issue_实现孙悟空Trace高亮清除与节点详情浮层.md",
       "title": "P1-C：Trace 与详情交互",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -598,7 +611,7 @@
     {
       "id": "P1-D-000",
       "type": "DOC",
-      "file": "issue-P1-D-000-DOC-visual-languages-versioncontrolid.md",
+      "file": "issue_建立以节点形状与线型表达传说图谱的初版视觉基准.md",
       "title": "P1-D：最小视觉语言",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -614,7 +627,7 @@
     {
       "id": "P1-E-000",
       "type": "QA",
-      "file": "issue-P1-E-000-QA-acceptance-versioncontrolid.md",
+      "file": "issue_记录孙悟空Trace最小Demo的人工验收.md",
       "title": "P1-E：验收",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -630,7 +643,7 @@
     {
       "id": "P1-F-000",
       "type": "DB",
-      "file": "issue-P1-F-000-DB-project-goal-versioncontrolid.md",
+      "file": "issue_明确孙悟空Trace最小Demo的延后范围.md",
       "title": "P1-F：明确不做",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -649,7 +662,7 @@
     {
       "id": "P1-G-000",
       "type": "DOC",
-      "file": "issue-P1-G-000-DOC-m3-expressive-git-graph-versioncontrolid.md",
+      "file": "issue_用M3 Expressive组件与平滑Git图连线改造传说图谱.md",
       "title": "P1-G：M3 Expressive 与 Git graph 改造",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -684,10 +697,16 @@
       "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
     },
     {
-      "id": "P2-A-000",
+      "id": "P2-A-001",
       "type": "FE",
-      "file": "issue-P2-A-000-FE-experience-versioncontrolid.md",
-      "title": "P2-A：扩展阅读体验",
+      "file": "issue_支持同时Trace多个目标角色.md",
+      "current_files": [
+        "issue_支持同时Trace多个目标角色.md",
+        "issue_扩展传说条目搜索与独立筛选面板.md",
+        "issue_支持文化区块合并与政权分叉.md",
+        "issue_扩展九尾狐阎罗王天狗与龙的谱系样例.md"
+      ],
+      "title": "支持同时Trace多个目标角色",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
         "P2-A-000",
@@ -699,12 +718,96 @@
         "P2-A-003",
         "P2-A-004"
       ],
-      "state": "进行中（原文同时包含已完成与未完成项）"
+      "state": "进行中（原文同时包含已完成与未完成项）",
+      "split_from": "issue-P2-A-000-FE-experience-versioncontrolid.md",
+      "split_source_id": "P2-A-000",
+      "split_source_title": "P2-A：扩展阅读体验"
+    },
+    {
+      "id": "P2-A-002",
+      "type": "FE",
+      "file": "issue_扩展传说条目搜索与独立筛选面板.md",
+      "current_files": [
+        "issue_支持同时Trace多个目标角色.md",
+        "issue_扩展传说条目搜索与独立筛选面板.md",
+        "issue_支持文化区块合并与政权分叉.md",
+        "issue_扩展九尾狐阎罗王天狗与龙的谱系样例.md"
+      ],
+      "title": "扩展传说条目搜索与独立筛选面板",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-A-000",
+        "P2-A-001",
+        "P2-A-002",
+        "P2-A-002-A",
+        "P2-A-002-B",
+        "P2-A-002-C",
+        "P2-A-003",
+        "P2-A-004"
+      ],
+      "state": "进行中（原文同时包含已完成与未完成项）",
+      "split_from": "issue-P2-A-000-FE-experience-versioncontrolid.md",
+      "split_source_id": "P2-A-000",
+      "split_source_title": "P2-A：扩展阅读体验"
+    },
+    {
+      "id": "P2-A-003",
+      "type": "FE",
+      "file": "issue_支持文化区块合并与政权分叉.md",
+      "current_files": [
+        "issue_支持同时Trace多个目标角色.md",
+        "issue_扩展传说条目搜索与独立筛选面板.md",
+        "issue_支持文化区块合并与政权分叉.md",
+        "issue_扩展九尾狐阎罗王天狗与龙的谱系样例.md"
+      ],
+      "title": "支持文化区块合并与政权分叉",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-A-000",
+        "P2-A-001",
+        "P2-A-002",
+        "P2-A-002-A",
+        "P2-A-002-B",
+        "P2-A-002-C",
+        "P2-A-003",
+        "P2-A-004"
+      ],
+      "state": "进行中（原文同时包含已完成与未完成项）",
+      "split_from": "issue-P2-A-000-FE-experience-versioncontrolid.md",
+      "split_source_id": "P2-A-000",
+      "split_source_title": "P2-A：扩展阅读体验"
+    },
+    {
+      "id": "P2-A-004",
+      "type": "FE",
+      "file": "issue_扩展九尾狐阎罗王天狗与龙的谱系样例.md",
+      "current_files": [
+        "issue_支持同时Trace多个目标角色.md",
+        "issue_扩展传说条目搜索与独立筛选面板.md",
+        "issue_支持文化区块合并与政权分叉.md",
+        "issue_扩展九尾狐阎罗王天狗与龙的谱系样例.md"
+      ],
+      "title": "扩展九尾狐阎罗王天狗与龙的谱系样例",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-A-000",
+        "P2-A-001",
+        "P2-A-002",
+        "P2-A-002-A",
+        "P2-A-002-B",
+        "P2-A-002-C",
+        "P2-A-003",
+        "P2-A-004"
+      ],
+      "state": "进行中（原文同时包含已完成与未完成项）",
+      "split_from": "issue-P2-A-000-FE-experience-versioncontrolid.md",
+      "split_source_id": "P2-A-000",
+      "split_source_title": "P2-A：扩展阅读体验"
     },
     {
       "id": "P2-B-000",
       "type": "PM",
-      "file": "issue-P2-B-000-PM-content-versioncontrolid.md",
+      "file": "issue_评估AI候选内容生成与人工审核及社区修正流程.md",
       "title": "P2-B：内容生产与审核",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -718,7 +821,7 @@
     {
       "id": "P2-C-000",
       "type": "DATA",
-      "file": "issue-P2-C-000-DATA-knowledge-versioncontrolid.md",
+      "file": "issue_以站内搜索驱动共享知识库增补与持续入库.md",
       "title": "P2-C：增量共享知识库",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -743,7 +846,7 @@
     {
       "id": "P2-D-001",
       "type": "DB",
-      "file": "issue-P2-D-001-DB-data-database-graph-versioncontrolid.md",
+      "file": "issue_让数据库时间图谱随新增条目刷新并保留历史布局.md",
       "title": "P2-D：数据库时间图谱",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -757,7 +860,7 @@
     {
       "id": "P2-E-001",
       "type": "API",
-      "file": "issue-P2-E-001-API-story-project-versioncontrolid.md",
+      "file": "issue_从知识谱系创建独立保存的个人故事项目并编辑节点关系.md",
       "title": "P2-E：个人故事项目空间",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -772,7 +875,7 @@
     {
       "id": "P2-F-001",
       "type": "DB",
-      "file": "issue-P2-F-001-DB-configuration-tags-versioncontrolid.md",
+      "file": "issue_按标签依据配置图谱分组并保存每个空间的偏好.md",
       "title": "P2-F：可配置标签分组",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -787,8 +890,13 @@
     {
       "id": "P2-G-001",
       "type": "QA",
-      "file": "issue-P2-G-001-QA-graph-versioncontrolid.md",
-      "title": "P2-G：工具栏与图谱显示",
+      "file": "issue_调整传说图谱工具栏搜索位置与收起恢复入口.md",
+      "current_files": [
+        "issue_调整传说图谱工具栏搜索位置与收起恢复入口.md",
+        "issue_为传说谱系界面增加中英文切换并保存偏好.md",
+        "issue_提供节点名称与详细卡片三档图谱密度并保持连线避障.md"
+      ],
+      "title": "调整传说图谱工具栏搜索位置与收起恢复入口",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
         "P2-G-001",
@@ -797,12 +905,60 @@
         "P2-G-004",
         "P2-G-005"
       ],
-      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "split_from": "issue-P2-G-001-QA-graph-versioncontrolid.md",
+      "split_source_title": "P2-G：工具栏与图谱显示"
+    },
+    {
+      "id": "P2-G-002",
+      "type": "QA",
+      "file": "issue_为传说谱系界面增加中英文切换并保存偏好.md",
+      "current_files": [
+        "issue_调整传说图谱工具栏搜索位置与收起恢复入口.md",
+        "issue_为传说谱系界面增加中英文切换并保存偏好.md",
+        "issue_提供节点名称与详细卡片三档图谱密度并保持连线避障.md"
+      ],
+      "title": "为传说谱系界面增加中英文切换并保存偏好",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-G-001",
+        "P2-G-002",
+        "P2-G-003",
+        "P2-G-004",
+        "P2-G-005"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "split_from": "issue-P2-G-001-QA-graph-versioncontrolid.md",
+      "split_source_id": "P2-G-001",
+      "split_source_title": "P2-G：工具栏与图谱显示"
+    },
+    {
+      "id": "P2-G-003",
+      "type": "QA",
+      "file": "issue_提供节点名称与详细卡片三档图谱密度并保持连线避障.md",
+      "current_files": [
+        "issue_调整传说图谱工具栏搜索位置与收起恢复入口.md",
+        "issue_为传说谱系界面增加中英文切换并保存偏好.md",
+        "issue_提供节点名称与详细卡片三档图谱密度并保持连线避障.md"
+      ],
+      "title": "提供节点名称与详细卡片三档图谱密度并保持连线避障",
+      "source": "REQUIREMENTS.md",
+      "legacy_ids": [
+        "P2-G-001",
+        "P2-G-002",
+        "P2-G-003",
+        "P2-G-004",
+        "P2-G-005"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "split_from": "issue-P2-G-001-QA-graph-versioncontrolid.md",
+      "split_source_id": "P2-G-001",
+      "split_source_title": "P2-G：工具栏与图谱显示"
     },
     {
       "id": "DOC-A-000",
       "type": "DOC",
-      "file": "issue-DOC-A-000-DOC-repository-initialization-versioncontrolid.md",
+      "file": "issue_建立传说谱系仓库的协作文档基础.md",
       "title": "DOC-A：仓库初始化",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -819,7 +975,7 @@
     {
       "id": "X-A-001",
       "type": "DOC",
-      "file": "issue-X-A-001-DOC-ai-collaboration-versioncontrolid.md",
+      "file": "issue_追踪AI协作需求与历史执行记录.md",
       "title": "X-A：AI 可追踪协作",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -834,7 +990,7 @@
     {
       "id": "X-B-000",
       "type": "DB",
-      "file": "issue-X-B-000-DB-release-content-versioncontrolid.md",
+      "file": "issue_校验传说发布内容的可信度与外部来源完整性.md",
       "title": "X-B：发布内容完整性",
       "source": "REQUIREMENTS.md",
       "legacy_ids": [
@@ -847,38 +1003,9 @@
       "state": "待处理（原文未完成项保持未勾选）"
     },
     {
-      "id": "DB-A-001",
-      "type": "DB",
-      "file": "issue-DB-A-001-DB-storage-versioncontrolid.md",
-      "title": "DB-A：增量存储",
-      "source": "server/REQUIREMENTS.md",
-      "legacy_ids": [
-        "DB-A-001",
-        "DB-A-002",
-        "DB-A-003",
-        "DB-A-004"
-      ],
-      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
-    },
-    {
-      "id": "API-A-001",
-      "type": "API",
-      "file": "issue-API-A-001-API-search-versioncontrolid.md",
-      "title": "API-A：搜索增补",
-      "source": "server/REQUIREMENTS.md",
-      "legacy_ids": [
-        "API-A-001",
-        "API-A-002",
-        "API-A-003",
-        "API-A-004",
-        "API-A-005"
-      ],
-      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
-    },
-    {
       "id": "GRAPH-A-001",
       "type": "API",
-      "file": "issue-GRAPH-A-001-API-data-database-graph-versioncontrolid.md",
+      "file": "issue_提供完整分页数据库图谱并迁移结构化年代与文化标签.md",
       "title": "GRAPH-A：数据库图谱",
       "source": "server/REQUIREMENTS.md",
       "legacy_ids": [
@@ -891,7 +1018,7 @@
     {
       "id": "DEPLOY-A-001",
       "type": "QA",
-      "file": "issue-DEPLOY-A-001-QA-service-versioncontrolid.md",
+      "file": "issue_验证并发布Cloudflare Worker与D1共享服务.md",
       "title": "DEPLOY-A：共享服务",
       "source": "server/REQUIREMENTS.md",
       "legacy_ids": [
@@ -899,7 +1026,285 @@
         "DEPLOY-A-002"
       ],
       "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）"
+    },
+    {
+      "id": "API-A-001",
+      "type": "API",
+      "file": "issue_搜索时从 Wikidata 增补共享知识库.md",
+      "title": "搜索时从 Wikidata 增补共享知识库",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "API-A-001"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "implementation_commits": [],
+      "implementation_version_status": "unverified-shallow-history",
+      "split_from": "issue-API-A-001-API-search-versioncontrolid.md"
+    },
+    {
+      "id": "API-A-002",
+      "type": "API",
+      "file": "issue_缓存重复增补查询并在失败时保留既有搜索结果.md",
+      "title": "缓存重复增补查询并在失败时保留既有搜索结果",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "API-A-002"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "implementation_commits": [],
+      "implementation_version_status": "unverified-shallow-history",
+      "split_from": "issue-API-A-001-API-search-versioncontrolid.md"
+    },
+    {
+      "id": "API-A-003",
+      "type": "API",
+      "file": "issue_校验搜索输入并限制 Wikidata 来源请求范围.md",
+      "title": "校验搜索输入并限制 Wikidata 来源请求范围",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "API-A-003"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "implementation_commits": [],
+      "implementation_version_status": "unverified-shallow-history",
+      "split_from": "issue-API-A-001-API-search-versioncontrolid.md"
+    },
+    {
+      "id": "API-A-004",
+      "type": "API",
+      "file": "issue_为自动发现的传播关系保存来源并标记待复核.md",
+      "title": "为自动发现的传播关系保存来源并标记待复核",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "API-A-004"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "implementation_commits": [],
+      "implementation_version_status": "unverified-shallow-history",
+      "split_from": "issue-API-A-001-API-search-versioncontrolid.md"
+    },
+    {
+      "id": "API-A-005",
+      "type": "API",
+      "file": "issue_区分 Wikidata 类别与主题并升级旧搜索缓存.md",
+      "title": "区分 Wikidata 类别与主题并升级旧搜索缓存",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "API-A-005"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "implementation_commits": [],
+      "implementation_version_status": "unverified-shallow-history",
+      "split_from": "issue-API-A-001-API-search-versioncontrolid.md"
+    },
+    {
+      "id": "DB-A-001",
+      "type": "DB",
+      "file": "issue_持久保存共享知识条目、来源版本及关系.md",
+      "title": "持久保存共享知识条目、来源版本及关系",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "DB-A-001"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "implementation_commits": [],
+      "implementation_version_status": "unverified-shallow-history",
+      "split_from": "issue-DB-A-001-DB-storage-versioncontrolid.md"
+    },
+    {
+      "id": "DB-A-002-seed-import",
+      "type": "DB",
+      "file": "issue_幂等导入原有共享知识样例.md",
+      "title": "幂等导入原有共享知识样例",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "DB-A-002"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "implementation_commits": [],
+      "implementation_version_status": "unverified-shallow-history",
+      "split_from": "issue-DB-A-001-DB-storage-versioncontrolid.md"
+    },
+    {
+      "id": "DB-A-002-entity-deduplication",
+      "type": "DB",
+      "file": "issue_按来源实体标识合并重复搜索入库的知识条目.md",
+      "title": "按来源实体标识合并重复搜索入库的知识条目",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "DB-A-002"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "implementation_commits": [],
+      "implementation_version_status": "unverified-shallow-history",
+      "split_from": "issue-DB-A-001-DB-storage-versioncontrolid.md"
+    },
+    {
+      "id": "DB-A-003",
+      "type": "DB",
+      "file": "issue_增量合并来源与梗概时保护人工内容和关系可信度.md",
+      "title": "增量合并来源与梗概时保护人工内容和关系可信度",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "DB-A-003"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "implementation_commits": [],
+      "implementation_version_status": "unverified-shallow-history",
+      "split_from": "issue-DB-A-001-DB-storage-versioncontrolid.md"
+    },
+    {
+      "id": "DB-A-004",
+      "type": "DB",
+      "file": "issue_为知识标签保存四类分组依据并无损迁移既有数据.md",
+      "title": "为知识标签保存四类分组依据并无损迁移既有数据",
+      "source": "server/REQUIREMENTS.md",
+      "legacy_ids": [
+        "DB-A-004"
+      ],
+      "state": "已完成（沿用原需求记录；本轮未重新执行产品验收）",
+      "implementation_commits": [],
+      "implementation_version_status": "unverified-shallow-history",
+      "split_from": "issue-DB-A-001-DB-storage-versioncontrolid.md"
     }
   ],
-  "note": "Original states retained; historical log evidence does not complete current tasks."
+  "note": "Original states retained; historical log evidence does not complete current tasks.",
+  "naming_corrections": [
+    {
+      "time": "2026-10-24 05:47:05 UTC",
+      "old_to_current_files": {
+        "issue/issue-API-A-001-API-search-versioncontrolid.md": [
+          "issue/issue-enrich-shared-knowledge-search-from-wikidata.md",
+          "issue/issue-cache-search-enrichment-and-preserve-results-on-failure.md",
+          "issue/issue-validate-search-input-and-limit-wikidata-requests.md",
+          "issue/issue-retain-sources-and-review-status-for-discovered-influence-links.md",
+          "issue/issue-distinguish-wikidata-types-from-topics-and-upgrade-search-cache.md"
+        ],
+        "issue/issue-DB-A-001-DB-storage-versioncontrolid.md": [
+          "issue/issue-persist-shared-knowledge-entries-sources-and-relations.md",
+          "issue/issue-import-existing-knowledge-samples-idempotently.md",
+          "issue/issue-deduplicate-searched-knowledge-entities-by-external-id.md",
+          "issue/issue-merge-knowledge-updates-without-overwriting-curated-content.md",
+          "issue/issue-add-knowledge-tag-grouping-basis-without-data-loss.md"
+        ]
+      },
+      "implementation_version_status": "unverified-shallow-history",
+      "note": "Only task descriptions appear in filenames. Preserve old IDs and type in properties; no migration or snapshot commit is presented as a business implementation commit."
+    },
+    {
+      "time": "2026-10-24 06:07:34 UTC",
+      "old_to_current_files": {
+        "issue/issue-template.md": "issue/issue_template.md"
+      },
+      "new_format": "issue-specific-task-description[-verified-implementation-version].md",
+      "batch": "final-underscore-rules"
+    },
+    {
+      "time": "2026-10-24 06:16:33 UTC",
+      "old_to_current_files": {
+        "issue/issue-enrich-shared-knowledge-search-from-wikidata.md": "issue/issue_搜索时从 Wikidata 增补共享知识库.md",
+        "issue/issue-cache-search-enrichment-and-preserve-results-on-failure.md": "issue/issue_缓存重复增补查询并在失败时保留既有搜索结果.md",
+        "issue/issue-validate-search-input-and-limit-wikidata-requests.md": "issue/issue_校验搜索输入并限制 Wikidata 来源请求范围.md",
+        "issue/issue-retain-sources-and-review-status-for-discovered-influence-links.md": "issue/issue_为自动发现的传播关系保存来源并标记待复核.md",
+        "issue/issue-distinguish-wikidata-types-from-topics-and-upgrade-search-cache.md": "issue/issue_区分 Wikidata 类别与主题并升级旧搜索缓存.md",
+        "issue/issue-persist-shared-knowledge-entries-sources-and-relations.md": "issue/issue_持久保存共享知识条目、来源版本及关系.md",
+        "issue/issue-import-existing-knowledge-samples-idempotently.md": "issue/issue_幂等导入原有共享知识样例.md",
+        "issue/issue-deduplicate-searched-knowledge-entities-by-external-id.md": "issue/issue_按来源实体标识合并重复搜索入库的知识条目.md",
+        "issue/issue-merge-knowledge-updates-without-overwriting-curated-content.md": "issue/issue_增量合并来源与梗概时保护人工内容和关系可信度.md",
+        "issue/issue-add-knowledge-tag-grouping-basis-without-data-loss.md": "issue/issue_为知识标签保存四类分组依据并无损迁移既有数据.md"
+      },
+      "new_format": "issue-specific-task-description[-verified-implementation-version].md",
+      "batch": "native-legend-examples"
+    },
+    {
+      "time": "2026-10-24 06:30:10 UTC",
+      "old_to_current_files": {
+        "issue/issue-DOC-migration-20261023-DOC-migrate-project-workflow-versioncontrolid.md": "issue/issue_迁移项目任务与协作记录_da915da5.md"
+      },
+      "new_format": "issue-specific-task-description[-verified-implementation-version].md",
+      "batch": "native-document-records"
+    },
+    {
+      "time": "2026-10-24 07:05:25 UTC",
+      "old_to_current_files": {
+        "issue/issue-FOUND-A-000-CONTENT-product-foundation-versioncontrolid.md": [
+          "issue/issue_明确传说谱系的产品定位目标用户与技术方向.md"
+        ],
+        "issue/issue-FOUND-B-000-DB-model-versioncontrolid.md": [
+          "issue/issue_建立支持多来源分支与合流的传说演化图谱模型.md"
+        ],
+        "issue/issue-FOUND-C-000-DB-content-versioncontrolid.md": [
+          "issue/issue_为传说传播关系标记可信度并提供外部来源索引.md"
+        ],
+        "issue/issue-migration-9e89a53976d6-QA-trace-demo-versioncontrolid.md": [
+          "issue/issue_明确孙悟空Trace最小Demo的阅读与视觉验证范围.md"
+        ],
+        "issue/issue-P1-A-000-PM-graph-layout-versioncontrolid.md": [
+          "issue/issue_实现可双向滚动的单页孙悟空时间图谱.md"
+        ],
+        "issue/issue-P1-B-000-PM-data-versioncontrolid.md": [
+          "issue/issue_建立孙悟空谱系样例并标注关系可信度与来源.md"
+        ],
+        "issue/issue-P1-C-000-DB-trace-interaction-versioncontrolid.md": [
+          "issue/issue_实现孙悟空Trace高亮清除与节点详情浮层.md"
+        ],
+        "issue/issue-P1-D-000-DOC-visual-languages-versioncontrolid.md": [
+          "issue/issue_建立以节点形状与线型表达传说图谱的初版视觉基准.md"
+        ],
+        "issue/issue-P1-E-000-QA-acceptance-versioncontrolid.md": [
+          "issue/issue_记录孙悟空Trace最小Demo的人工验收.md"
+        ],
+        "issue/issue-P1-F-000-DB-project-goal-versioncontrolid.md": [
+          "issue/issue_明确孙悟空Trace最小Demo的延后范围.md"
+        ],
+        "issue/issue-P1-G-000-DOC-m3-expressive-git-graph-versioncontrolid.md": [
+          "issue/issue_用M3 Expressive组件与平滑Git图连线改造传说图谱.md"
+        ],
+        "issue/issue-P2-A-000-FE-experience-versioncontrolid.md": [
+          "issue/issue_支持同时Trace多个目标角色.md",
+          "issue/issue_扩展传说条目搜索与独立筛选面板.md",
+          "issue/issue_支持文化区块合并与政权分叉.md",
+          "issue/issue_扩展九尾狐阎罗王天狗与龙的谱系样例.md"
+        ],
+        "issue/issue-P2-B-000-PM-content-versioncontrolid.md": [
+          "issue/issue_评估AI候选内容生成与人工审核及社区修正流程.md"
+        ],
+        "issue/issue-P2-C-000-DATA-knowledge-versioncontrolid.md": [
+          "issue/issue_以站内搜索驱动共享知识库增补与持续入库.md"
+        ],
+        "issue/issue-P2-D-001-DB-data-database-graph-versioncontrolid.md": [
+          "issue/issue_让数据库时间图谱随新增条目刷新并保留历史布局.md"
+        ],
+        "issue/issue-P2-E-001-API-story-project-versioncontrolid.md": [
+          "issue/issue_从知识谱系创建独立保存的个人故事项目并编辑节点关系.md"
+        ],
+        "issue/issue-P2-F-001-DB-configuration-tags-versioncontrolid.md": [
+          "issue/issue_按标签依据配置图谱分组并保存每个空间的偏好.md"
+        ],
+        "issue/issue-P2-G-001-QA-graph-versioncontrolid.md": [
+          "issue/issue_调整传说图谱工具栏搜索位置与收起恢复入口.md",
+          "issue/issue_为传说谱系界面增加中英文切换并保存偏好.md",
+          "issue/issue_提供节点名称与详细卡片三档图谱密度并保持连线避障.md"
+        ],
+        "issue/issue-DOC-A-000-DOC-repository-initialization-versioncontrolid.md": [
+          "issue/issue_建立传说谱系仓库的协作文档基础.md"
+        ],
+        "issue/issue-X-A-001-DOC-ai-collaboration-versioncontrolid.md": [
+          "issue/issue_追踪AI协作需求与历史执行记录.md"
+        ],
+        "issue/issue-X-B-000-DB-release-content-versioncontrolid.md": [
+          "issue/issue_校验传说发布内容的可信度与外部来源完整性.md"
+        ],
+        "issue/issue-GRAPH-A-001-API-data-database-graph-versioncontrolid.md": [
+          "issue/issue_提供完整分页数据库图谱并迁移结构化年代与文化标签.md"
+        ],
+        "issue/issue-DEPLOY-A-001-QA-service-versioncontrolid.md": [
+          "issue/issue_验证并发布Cloudflare Worker与D1共享服务.md"
+        ]
+      },
+      "new_format": "issue_任务描述[_真实实施版本].md",
+      "batch": "group-d-4"
+    }
+  ],
+  "versioncontrolid_status": "recorded per issue; unverified implementation versions omitted from filenames"
 }
