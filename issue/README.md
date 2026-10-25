@@ -1,9 +1,9 @@
 # Issue 入口
 
-本目录是当前工作副本的任务、检查与交接入口。旧需求的状态、ID 与来源保留在对应 Issue；历史 Comments 不自动更新当前完成度。实际实施版本只在核实后填写；尚无提交或未核实则省略文件名后缀，并在 property 说明。
+本目录是当前工作副本的任务、检查与交接入口。旧需求的状态、ID 与来源保留在对应 Issue；历史 Comments 不自动更新当前完成度。Issue 使用 Obsidian YAML frontmatter 和 Description / Comments 两个一级标题；文件名仅为 issue_原语言任务描述.md。真实 Git / P4 编号写入对应 Comment，recorded-version 仅记录可选内容发布版本。
 
 - [Issue 模板](issue_template.md)
-- [本轮迁移记录](issue_%E8%BF%81%E7%A7%BB%E9%A1%B9%E7%9B%AE%E4%BB%BB%E5%8A%A1%E4%B8%8E%E5%8D%8F%E4%BD%9C%E8%AE%B0%E5%BD%95_da915da5.md)
+- [本轮迁移记录](issue_%E8%BF%81%E7%A7%BB%E9%A1%B9%E7%9B%AE%E4%BB%BB%E5%8A%A1%E4%B8%8E%E5%8D%8F%E4%BD%9C%E8%AE%B0%E5%BD%95.md)
 - [旧路径与来源映射](migration-map.json)
 
 - [FOUND-A：产品基础](issue_%E6%98%8E%E7%A1%AE%E4%BC%A0%E8%AF%B4%E8%B0%B1%E7%B3%BB%E7%9A%84%E4%BA%A7%E5%93%81%E5%AE%9A%E4%BD%8D%E7%9B%AE%E6%A0%87%E7%94%A8%E6%88%B7%E4%B8%8E%E6%8A%80%E6%9C%AF%E6%96%B9%E5%90%91.md) — `FOUND-A-000`；已完成（沿用原需求记录；本轮未重新执行产品验收）；原路径 `REQUIREMENTS.md`。
